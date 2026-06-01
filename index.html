@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Roadmap Routine</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <section id="authScreen" class="auth-screen">
+      <div class="auth-card">
+        <div class="brand-badge">DR</div>
+        <h1>Daily Roadmap Routine</h1>
+        <p class="muted">Build discipline, protect your focus, and track your daily mission.</p>
+
+        <div class="tabs">
+          <button class="tab active" id="loginTab">Login</button>
+          <button class="tab" id="signupTab">Create Account</button>
+        </div>
+
+        <form id="authForm">
+          <input id="nameInput" class="hidden" type="text" placeholder="Full name" autocomplete="name" />
+          <input id="emailInput" type="email" placeholder="Email address" autocomplete="email" required />
+          <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" required />
+          <button type="submit" id="authSubmit">Login</button>
+        </form>
+
+        <button class="link-button" id="resetPasswordBtn">Forgot password?</button>
+        <p id="authMessage" class="message"></p>
+      </div>
+    </section>
+
+    <main id="dashboard" class="dashboard hidden">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="brand-badge small">DR</div>
+          <div>
+            <h2>Roadmap</h2>
+            <p id="userRole">User Mode</p>
+          </div>
+        </div>
+
+        <nav>
+          <button data-section="today" class="nav-btn active">Today</button>
+          <button data-section="routine" class="nav-btn">Routine</button>
+          <button data-section="channels" class="nav-btn">3 YouTube Channels</button>
+          <button data-section="rules" class="nav-btn">Avoid Rules</button>
+          <button data-section="admin" class="nav-btn" id="adminNav">Admin</button>
+        </nav>
+
+        <button class="logout" id="logoutBtn">Logout</button>
+      </aside>
+
+      <section class="content">
+        <header class="topbar">
+          <div>
+            <p class="date" id="todayDate"></p>
+            <h1 id="welcomeTitle">Welcome back</h1>
+          </div>
+          <div class="score-card">
+            <span id="completionScore">0%</span>
+            <small>completed</small>
+          </div>
+        </header>
+
+        <section id="today" class="page-section active-section">
+          <div class="grid two">
+            <div class="panel hero-panel">
+              <h2>Today's Mission</h2>
+              <p>Your day must protect your future. Tick what you complete, add comments, and adjust the day when class changes.</p>
+
+              <div class="agenda-controls">
+                <label>
+                  Day Type
+                  <select id="dayType">
+                    <option value="class">University / Class Day</option>
+                    <option value="free">No Class / Deep Work Day</option>
+                    <option value="custom">Custom Day</option>
+                  </select>
+                </label>
+                <button id="generateAgendaBtn">Generate Agenda</button>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2>Daily Reflection</h2>
+              <textarea id="dailyComment" placeholder="Write what happened today, what you learned, mistakes to avoid, and tomorrow's improvement..."></textarea>
+              <button id="saveCommentBtn">Save Comment</button>
+              <p id="saveStatus" class="message"></p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-heading">
+              <h2>Today's Checklist</h2>
+              <button id="resetTodayBtn" class="secondary">Reset Today</button>
+            </div>
+            <div id="taskList" class="task-list"></div>
+          </div>
+
+          <div class="panel">
+            <h2>Add Important Task</h2>
+            <form id="addTaskForm" class="inline-form">
+              <input id="newTaskTime" type="text" placeholder="Time e.g. 14:00" />
+              <input id="newTaskTitle" type="text" placeholder="Task title" required />
+              <button type="submit">Add</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="routine" class="page-section">
+          <div class="panel">
+            <h2>Core Daily Routine</h2>
+            <div class="timeline" id="routineTimeline"></div>
+          </div>
+        </section>
+
+        <section id="channels" class="page-section">
+          <div class="panel">
+            <h2>3 Global YouTube Channels</h2>
+            <p class="muted">Every morning, research content ideas for each channel. Save ideas and keep improving.</p>
+
+            <div id="channelList" class="channel-list"></div>
+
+            <form id="addChannelIdeaForm" class="stack-form">
+              <select id="channelSelect">
+                <option value="Channel 1">Channel 1</option>
+                <option value="Channel 2">Channel 2</option>
+                <option value="Channel 3">Channel 3</option>
+              </select>
+              <input id="ideaTitle" type="text" placeholder="Content idea title" required />
+              <textarea id="ideaNotes" placeholder="Research notes, hook, audience, angle..."></textarea>
+              <button type="submit">Save Content Idea</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="rules" class="page-section">
+          <div class="panel">
+            <h2>Discipline Rules To Avoid</h2>
+            <p class="muted">These rules are not punishment. They are protection for your focus.</p>
+            <div id="rulesList" class="rules-list"></div>
+          </div>
+        </section>
+
+        <section id="admin" class="page-section">
+          <div class="panel">
+            <h2>Admin Dashboard</h2>
+            <p class="muted">This area appears for your admin email. Real protection must be enforced in Firestore Security Rules.</p>
+            <div class="admin-grid">
+              <div class="mini-card">
+                <strong id="usersCount">0</strong>
+                <span>registered users</span>
+              </div>
+              <div class="mini-card">
+                <strong id="adminEmailText">Not set</strong>
+                <span>admin email</span>
+              </div>
+            </div>
+            <div id="usersList" class="users-list"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
