@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Daily Roadmap Routine</title>
-  <link rel="icon" type="image/jpeg" href="favicon.jpeg" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -49,6 +48,7 @@
         <button data-section="today" class="nav-btn active">Today</button>
         <button data-section="achievements" class="nav-btn">Achievements</button>
         <button data-section="coach" class="nav-btn">Channel Growth</button>
+        <button data-section="aiCoach" class="nav-btn">AI Coach</button>
         <button data-section="reminders" class="nav-btn">Reminders</button>
         <button data-section="rules" class="nav-btn">Discipline Rules</button>
         <button data-section="settings" class="nav-btn">Settings</button>
@@ -138,7 +138,10 @@
           <h2>Finish My Day</h2>
           <p class="muted">Save today as an achievement, generate advice, and create tomorrow's focus.</p>
           <textarea id="tomorrowFocusInput" placeholder="Tomorrow focus: what is the most important thing you must protect?"></textarea>
-          <button id="finishDayBtn">Finish My Day & Save Achievement</button>
+          <div class="button-row">
+            <button id="finishDayBtn">Finish My Day & Save Achievement</button>
+            <button id="generateAIAdviceBtn" class="secondary-ai" type="button">Generate AI Advice</button>
+          </div>
           <div id="dailyAdviceBox" class="advice-box hidden"></div>
         </div>
       </section>
@@ -194,6 +197,47 @@
         <div class="panel">
           <h2>3 Channel Focus</h2>
           <div id="channelFocusList" class="channel-list"></div>
+        </div>
+      </section>
+
+
+      <section id="aiCoach" class="page-section">
+        <div class="panel hero-panel">
+          <h2>Gemini AI Discipline Coach</h2>
+          <p>This coach analyzes your daily checklist, missed tasks, mood, energy, reflection, and channel progress. It gives you direct advice for discipline, YouTube growth, and tomorrow’s plan.</p>
+          <p class="muted">If AI is not enabled yet, this page will still show rule-based advice and explain what to activate in Firebase.</p>
+        </div>
+
+        <div class="grid two">
+          <div class="panel">
+            <h2>AI Daily Review</h2>
+            <p class="muted">Use this after or before finishing your day.</p>
+            <button id="aiDailyReviewBtn">Generate AI Daily Review</button>
+            <div id="aiDailyReviewBox" class="ai-output"></div>
+          </div>
+
+          <div class="panel">
+            <h2>AI Tomorrow Plan</h2>
+            <p class="muted">Get a focused plan for tomorrow based on your weak points today.</p>
+            <button id="aiTomorrowPlanBtn">Generate Tomorrow Plan</button>
+            <div id="aiTomorrowPlanBox" class="ai-output"></div>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="panel">
+            <h2>AI Channel Motivation</h2>
+            <p class="muted">Specific motivation and next actions for your three global YouTube channels.</p>
+            <button id="aiChannelCoachBtn">Generate Channel Coaching</button>
+            <div id="aiChannelCoachBox" class="ai-output"></div>
+          </div>
+
+          <div class="panel">
+            <h2>AI Weekly Discipline Review</h2>
+            <p class="muted">Looks at saved achievements and gives you pattern-based advice.</p>
+            <button id="aiWeeklyReviewBtn">Generate Weekly Review</button>
+            <div id="aiWeeklyReviewBox" class="ai-output"></div>
+          </div>
         </div>
       </section>
 

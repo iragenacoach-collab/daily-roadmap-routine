@@ -1,4 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -7,7 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 
 import {
   getFirestore,
@@ -18,13 +18,23 @@ import {
   collection,
   getDocs,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-ai.js";
 
 import { firebaseConfig, ADMIN_EMAIL } from "./firebase-config.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+let aiModel = null;
+try {
+  const ai = getAI(app, { backend: new GoogleAIBackend() });
+  aiModel = getGenerativeModel(ai, { model: "gemini-3.5-flash" });
+} catch (error) {
+  console.warn("AI Logic not ready:", error);
+}
 
 let isSignup = false;
 let currentUser = null;
@@ -77,6 +87,16 @@ const videoIdeaInput = $("videoIdeaInput");
 const saveCoachBtn = $("saveCoachBtn");
 const channelMotivationBox = $("channelMotivationBox");
 const channelFocusList = $("channelFocusList");
+
+const generateAIAdviceBtn = $("generateAIAdviceBtn");
+const aiDailyReviewBtn = $("aiDailyReviewBtn");
+const aiTomorrowPlanBtn = $("aiTomorrowPlanBtn");
+const aiChannelCoachBtn = $("aiChannelCoachBtn");
+const aiWeeklyReviewBtn = $("aiWeeklyReviewBtn");
+const aiDailyReviewBox = $("aiDailyReviewBox");
+const aiTomorrowPlanBox = $("aiTomorrowPlanBox");
+const aiChannelCoachBox = $("aiChannelCoachBox");
+const aiWeeklyReviewBox = $("aiWeeklyReviewBox");
 
 const enableNotificationsBtn = $("enableNotificationsBtn");
 const notificationStatus = $("notificationStatus");
@@ -628,6 +648,175 @@ function renderRules() {
     rulesList.appendChild(div);
   });
 }
+
+
+if (generateAIAdviceBtn) {
+  generateAIAdviceBtn.addEventListener("click", async () => {
+    const box = dailyAdviceBox;
+    box.classList.remove("hidden");
+    await generateAIIntoBox("daily", box);
+  });
+}
+
+if (aiDailyReviewBtn) {
+  aiDailyReviewBtn.addEventListener("click", async () => generateAIIntoBox("daily", aiDailyReviewBox));
+}
+
+if (aiTomorrowPlanBtn) {
+  aiTomorrowPlanBtn.addEventListener("click", async () => generateAIIntoBox("tomorrow", aiTomorrowPlanBox));
+}
+
+if (aiChannelCoachBtn) {
+  aiChannelCoachBtn.addEventListener("click", async () => generateAIIntoBox("channel", aiChannelCoachBox));
+}
+
+if (aiWeeklyReviewBtn) {
+  aiWeeklyReviewBtn.addEventListener("click", async () => generateAIIntoBox("weekly", aiWeeklyReviewBox));
+}
+
+async function generateAIIntoBox(type, box) {
+  if (!box) return;
+
+  box.className = "ai-output loading";
+  box.textContent = "Gemini AI is thinking...";
+
+  const prompt = buildAIPrompt(type);
+
+  try {
+    if (!aiModel) throw new Error("Firebase AI Logic model is not initialized.");
+
+    const result = await aiModel.generateContent(prompt);
+    const text = result?.response?.text?.() || "No AI response received.";
+
+    box.className = "ai-output";
+    box.textContent = text;
+
+    await saveAIResponse(type, text);
+  } catch (error) {
+    const fallback = buildAIFallback(type);
+    box.className = "ai-output error";
+    box.textContent =
+      "AI Coach is not active yet or Firebase AI Logic is not configured.\n\n" +
+      "Fallback coaching:\n\n" + fallback + "\n\n" +
+      "To activate real Gemini AI: Firebase Console → AI Services → AI Logic → Get started → choose Gemini Developer API → finish setup. Also enable App Check later for protection.\n\n" +
+      "Technical error: " + cleanFirebaseError(error.message || String(error));
+  }
+}
+
+function buildAIPrompt(type) {
+  const score = getScore();
+  const completed = currentDayData.tasks.filter(t => t.done).map(t => t.title);
+  const missed = currentDayData.tasks.filter(t => !t.done).map(t => t.title);
+  const coach = currentDayData.coach || structuredClone(defaultCoach);
+  const recentAchievements = achievements.slice(0, 7).map(a => ({
+    date: a.date,
+    score: a.score,
+    mood: a.mood,
+    energy: a.energy,
+    tomorrowFocus: a.tomorrowFocus,
+    missedCount: a.missedCount
+  }));
+
+  const base = `
+You are a strict but constructive personal discipline coach for Iragena.
+Context:
+- Main mission: ${settings.moneyGoal}
+- Build three global YouTube channels.
+- Daily rules: avoid dating for 3 years, avoid useless status/memes, avoid too much talking/groups, live privately, control emotions, focus on YouTube until $100K in 3 years.
+- Today's score: ${score}%
+- Mood: ${currentDayData.mood}
+- Energy: ${currentDayData.energy}
+- Reflection: ${currentDayData.comment || "No reflection yet"}
+- Tomorrow focus written by user: ${currentDayData.tomorrowFocus || "Not written yet"}
+- Completed tasks: ${completed.join("; ") || "None"}
+- Missed tasks: ${missed.join("; ") || "None"}
+- Channel progress: ${JSON.stringify(coach)}
+- Recent achievements: ${JSON.stringify(recentAchievements)}
+
+Rules for your response:
+- Be direct, practical, and motivational.
+- Do not flatter too much.
+- Keep it short enough to read quickly.
+- Give clear next actions.
+- Use English with small Kinyarwanda phrases only when helpful.
+`;
+
+  if (type === "tomorrow") {
+    return base + `
+Create tomorrow's plan:
+1. Main warning from today.
+2. First 3 hours plan.
+3. YouTube channel action.
+4. One thing to avoid.
+5. Short motivational command.
+`;
+  }
+
+  if (type === "channel") {
+    return base + `
+Give channel growth coaching:
+1. What I did well for YouTube today.
+2. What I avoided or missed.
+3. What each of the 3 channels should focus on tomorrow.
+4. A strong motivation paragraph.
+`;
+  }
+
+  if (type === "weekly") {
+    return base + `
+Analyze the recent achievement history:
+1. Pattern you see.
+2. Strongest habit.
+3. Weakest habit.
+4. One weekly improvement system.
+5. 5-line discipline message for the next 7 days.
+`;
+  }
+
+  return base + `
+Give today's daily review:
+1. Score interpretation.
+2. Biggest weakness.
+3. Best win.
+4. Advice for tomorrow.
+5. YouTube motivation.
+6. One sentence I should remember before sleeping.
+`;
+}
+
+function buildAIFallback(type) {
+  const achievement = {
+    score: getScore(),
+    missedTasks: currentDayData.tasks.filter(t => !t.done).map(t => t.title),
+    coach: currentDayData.coach
+  };
+
+  if (type === "tomorrow") {
+    return "Tomorrow must start simple: wake up, pray, write the first task, do sport, then complete one serious YouTube action before distractions touch you.";
+  }
+
+  if (type === "channel") {
+    return "Your channels will grow from boring repetition: research, script, visual plan, edit, upload, study analytics, repeat. Do not wait to feel ready.";
+  }
+
+  if (type === "weekly") {
+    return "Your week improves when your mornings improve. Protect wake-up time, prayer, content research, sport, and evening review. Those are the pillars.";
+  }
+
+  return generateAdviceText(achievement);
+}
+
+async function saveAIResponse(type, text) {
+  const ref = doc(db, "users", currentUser.uid, "aiResponses", `${todayKey()}-${type}`);
+  await setDoc(ref, {
+    type,
+    date: todayKey(),
+    text,
+    score: getScore(),
+    createdAt: new Date().toISOString()
+  }, { merge: true });
+}
+
 
 enableNotificationsBtn.addEventListener("click", async () => {
   if (!("Notification" in window)) {
