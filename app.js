@@ -29,6 +29,8 @@ const db = getFirestore(app);
 let isSignup = false;
 let currentUser = null;
 let currentDayData = null;
+let settings = null;
+let achievements = [];
 
 const $ = (id) => document.getElementById(id);
 
@@ -44,137 +46,103 @@ const loginTab = $("loginTab");
 const signupTab = $("signupTab");
 const resetPasswordBtn = $("resetPasswordBtn");
 const logoutBtn = $("logoutBtn");
+
 const todayDate = $("todayDate");
 const welcomeTitle = $("welcomeTitle");
-const userRole = $("userRole");
-const adminNav = $("adminNav");
-const adminEmailText = $("adminEmailText");
-
+const completionScore = $("completionScore");
 const dayType = $("dayType");
 const generateAgendaBtn = $("generateAgendaBtn");
 const taskList = $("taskList");
-const completionScore = $("completionScore");
 const addTaskForm = $("addTaskForm");
 const newTaskTime = $("newTaskTime");
 const newTaskTitle = $("newTaskTitle");
 const dailyComment = $("dailyComment");
+const moodInput = $("moodInput");
+const energyInput = $("energyInput");
 const saveCommentBtn = $("saveCommentBtn");
 const saveStatus = $("saveStatus");
 const resetTodayBtn = $("resetTodayBtn");
+const tomorrowFocusInput = $("tomorrowFocusInput");
+const finishDayBtn = $("finishDayBtn");
+const dailyAdviceBox = $("dailyAdviceBox");
 
-const routineTimeline = $("routineTimeline");
-const channelList = $("channelList");
-const addChannelIdeaForm = $("addChannelIdeaForm");
-const channelSelect = $("channelSelect");
-const ideaTitle = $("ideaTitle");
-const ideaNotes = $("ideaNotes");
+const totalDays = $("totalDays");
+const currentStreak = $("currentStreak");
+const averageScore = $("averageScore");
+const bestScore = $("bestScore");
+const achievementList = $("achievementList");
+
+const coachChecks = document.querySelectorAll(".coach-check");
+const videoIdeaInput = $("videoIdeaInput");
+const saveCoachBtn = $("saveCoachBtn");
+const channelMotivationBox = $("channelMotivationBox");
+const channelFocusList = $("channelFocusList");
+
+const enableNotificationsBtn = $("enableNotificationsBtn");
+const notificationStatus = $("notificationStatus");
+const addDefaultRemindersBtn = $("addDefaultRemindersBtn");
+const reminderList = $("reminderList");
+const addReminderForm = $("addReminderForm");
+const reminderTimeInput = $("reminderTimeInput");
+const reminderTextInput = $("reminderTextInput");
+
 const rulesList = $("rulesList");
-const usersCount = $("usersCount");
-const usersList = $("usersList");
+
+const settingsForm = $("settingsForm");
+const wakeTimeInput = $("wakeTimeInput");
+const sleepTimeInput = $("sleepTimeInput");
+const sportTimeInput = $("sportTimeInput");
+const classStartInput = $("classStartInput");
+const classEndInput = $("classEndInput");
+const moneyGoalInput = $("moneyGoalInput");
+const settingsStatus = $("settingsStatus");
 
 const todayKey = () => new Date().toISOString().split("T")[0];
 
-const formatDate = () => {
-  const d = new Date();
-  return d.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric"
-  });
+const defaultSettings = {
+  wakeTime: "05:00",
+  sleepTime: "23:00",
+  sportTime: "06:30",
+  classStart: "08:00",
+  classEnd: "17:00",
+  moneyGoal: "$100K from YouTube and online skills in 3 years",
+  channels: [
+    { name: "Channel 1", focus: "Global AI tools and beginner digital skills" },
+    { name: "Channel 2", focus: "Money mindset, discipline, and practical growth" },
+    { name: "Channel 3", focus: "Content systems, productivity, and online income learning" }
+  ],
+  rules: [
+    { title: "Avoid dating for 3 years", text: "Protect your focus. No chasing relationships while building your future." },
+    { title: "Avoid useless status posts", text: "No memes or emotional status. Post only for very important birthdays or serious purpose." },
+    { title: "Work on YouTube until $100K", text: "Research, script, create, edit, upload, learn, and repeat for 3 years." },
+    { title: "Avoid too much talking and useless groups", text: "Reduce unnecessary words and groups that steal your time." },
+    { title: "Live privately and control emotions", text: "Appear for a short time, work deeply, and use discipline before emotion." }
+  ]
 };
 
-const baseRoutine = [
-  { time: "23:00", title: "Sleep. Protect tomorrow by ending today on time." },
-  { time: "05:00", title: "Wake up. No excuses. No scrolling first." },
-  { time: "05:05", title: "Pray for 10 minutes. Ask for strength, discipline, and wisdom." },
-  { time: "05:15", title: "Brainstorm today's mission and write the most important tasks." },
-  { time: "05:45", title: "Research content ideas for 3 global YouTube channels." },
-  { time: "06:30", title: "Sport: push-ups, stretching, and body activation." },
-  { time: "07:00", title: "Prepare for university/class when class exists." },
-  { time: "08:00", title: "Class / study block." },
-  { time: "12:30", title: "Cook, eat, refresh, and prepare for the next block." },
-  { time: "17:00", title: "Return from class or finish main school block." },
-  { time: "18:00", title: "Editing / content production / deep work." },
-  { time: "20:00", title: "Cook dinner, eat, clean, and organize tomorrow." },
-  { time: "22:30", title: "Review checklist, comment, plan tomorrow, no phone distractions." },
-  { time: "23:00", title: "Sleep again. The system repeats." }
-];
+const defaultCoach = {
+  research: false,
+  script: false,
+  visuals: false,
+  edit: false,
+  upload: false,
+  competitors: false,
+  videoIdea: ""
+};
 
-const classDayTasks = [
-  { time: "05:00", title: "Wake up at 5:00 AM", done: false },
-  { time: "05:05", title: "Pray for 10 minutes", done: false },
-  { time: "05:15", title: "Brainstorm today’s tasks and discipline mission", done: false },
-  { time: "05:45", title: "Research content for 3 global YouTube channels", done: false },
-  { time: "06:30", title: "Do push-ups / sport", done: false },
-  { time: "07:00", title: "Prepare for university", done: false },
-  { time: "08:00", title: "Attend class / study seriously", done: false },
-  { time: "12:30", title: "Cook, eat, refresh, and return to class if needed", done: false },
-  { time: "17:00", title: "Finish class and return home", done: false },
-  { time: "18:00", title: "Edit videos / create content", done: false },
-  { time: "20:00", title: "Cook dinner and eat", done: false },
-  { time: "22:30", title: "Review the day and write comment", done: false },
-  { time: "23:00", title: "Sleep at 11:00 PM", done: false }
-];
+function formatDate() {
+  const d = new Date();
+  return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+}
 
-const freeDayTasks = [
-  { time: "05:00", title: "Wake up at 5:00 AM", done: false },
-  { time: "05:05", title: "Pray for 10 minutes", done: false },
-  { time: "05:15", title: "Brainstorm today’s mission", done: false },
-  { time: "05:45", title: "Research content for 3 global YouTube channels", done: false },
-  { time: "06:30", title: "Do push-ups / sport", done: false },
-  { time: "07:00", title: "Deep work block 1: YouTube scripts/research", done: false },
-  { time: "10:00", title: "Deep work block 2: editing or website/project build", done: false },
-  { time: "12:30", title: "Cook, eat, rest shortly", done: false },
-  { time: "14:00", title: "Skill improvement / coding / business research", done: false },
-  { time: "17:00", title: "Review money plan and content progress", done: false },
-  { time: "18:00", title: "Editing / content production", done: false },
-  { time: "20:00", title: "Cook dinner and eat", done: false },
-  { time: "22:30", title: "Review the day and plan tomorrow", done: false },
-  { time: "23:00", title: "Sleep at 11:00 PM", done: false }
-];
-
-const disciplineRules = [
-  {
-    title: "Avoid dating for 3 years",
-    text: "Protect your focus. No chasing relationships while building your future."
-  },
-  {
-    title: "Avoid useless status posts",
-    text: "No memes or emotional status updates. Post only for very important birthdays or serious purpose."
-  },
-  {
-    title: "Work on YouTube until $100K in 3 years",
-    text: "Your content system is the mission. Learn, publish, improve, repeat."
-  },
-  {
-    title: "Avoid too much talking",
-    text: "Reduce unnecessary conversations. Your words must match your goals."
-  },
-  {
-    title: "Avoid useless groups",
-    text: "Do not stay in groups that waste time, distract you, or weaken discipline."
-  },
-  {
-    title: "Live privately",
-    text: "Appear for a short time, work deeply, and let results speak."
-  },
-  {
-    title: "Control emotions",
-    text: "Do not let feelings decide your future. Use discipline before emotion."
-  }
-];
-
-const defaultChannels = [
-  { name: "Channel 1", focus: "Global AI tools and beginner digital skills", ideas: [] },
-  { name: "Channel 2", focus: "Money mindset, discipline, and practical growth", ideas: [] },
-  { name: "Channel 3", focus: "Content systems, productivity, and online income learning", ideas: [] }
-];
+function isAdminEmail(email) {
+  return email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
 
 function setMode(signup) {
   isSignup = signup;
   nameInput.classList.toggle("hidden", !signup);
-  authSubmit.textContent = signup ? "Create Account" : "Login";
+  authSubmit.textContent = signup ? "Create Admin Account" : "Login";
   signupTab.classList.toggle("active", signup);
   loginTab.classList.toggle("active", !signup);
   authMessage.textContent = "";
@@ -189,19 +157,18 @@ authForm.addEventListener("submit", async (e) => {
 
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
-  const name = nameInput.value.trim();
+  const name = nameInput.value.trim() || "Iragena";
+
+  if (!isAdminEmail(email)) {
+    authMessage.textContent = `This is a private app. Use the admin email: ${ADMIN_EMAIL}`;
+    return;
+  }
 
   try {
     if (isSignup) {
-      if (!name) throw new Error("Please enter your full name.");
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
-      await setDoc(doc(db, "users", cred.user.uid), {
-        name,
-        email,
-        role: email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? "admin" : "user",
-        createdAt: serverTimestamp()
-      });
+      await ensureUserDoc(cred.user);
     } else {
       await signInWithEmailAndPassword(auth, email, password);
     }
@@ -214,9 +181,15 @@ authForm.addEventListener("submit", async (e) => {
 resetPasswordBtn.addEventListener("click", async () => {
   const email = emailInput.value.trim();
   if (!email) {
-    authMessage.textContent = "Enter your email first, then click forgot password.";
+    authMessage.textContent = "Enter your admin email first.";
     return;
   }
+
+  if (!isAdminEmail(email)) {
+    authMessage.textContent = `Use the admin email: ${ADMIN_EMAIL}`;
+    return;
+  }
+
   try {
     await sendPasswordResetEmail(auth, email);
     authMessage.textContent = "Password reset email sent.";
@@ -229,72 +202,172 @@ logoutBtn.addEventListener("click", () => signOut(auth));
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
-  if (user) {
-    authScreen.classList.add("hidden");
-    dashboard.classList.remove("hidden");
-    await ensureUserDoc(user);
-    await loadUserData();
-    renderAll();
-  } else {
+
+  if (!user) {
     dashboard.classList.add("hidden");
     authScreen.classList.remove("hidden");
+    return;
   }
+
+  if (!isAdminEmail(user.email)) {
+    authMessage.textContent = "Access denied. This roadmap is private.";
+    await signOut(auth);
+    return;
+  }
+
+  authScreen.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+
+  await ensureUserDoc(user);
+  await loadAllData();
+  renderAll();
+  startReminderLoop();
 });
 
 async function ensureUserDoc(user) {
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+
   if (!snap.exists()) {
-    await setDoc(userRef, {
-      name: user.displayName || "User",
+    await setDoc(ref, {
+      name: user.displayName || "Iragena",
       email: user.email,
-      role: user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? "admin" : "user",
+      role: "admin",
+      settings: defaultSettings,
       createdAt: serverTimestamp()
     });
+    return;
+  }
+
+  const data = snap.data();
+  if (!data.settings) {
+    await updateDoc(ref, { settings: defaultSettings });
   }
 }
 
-async function loadUserData() {
+async function loadAllData() {
+  const userRef = doc(db, "users", currentUser.uid);
+  const userSnap = await getDoc(userRef);
+  settings = userSnap.data().settings || defaultSettings;
+
   const dayRef = doc(db, "users", currentUser.uid, "days", todayKey());
   const daySnap = await getDoc(dayRef);
 
   if (!daySnap.exists()) {
-    currentDayData = {
-      date: todayKey(),
-      dayType: "class",
-      tasks: classDayTasks,
-      comment: "",
-      channels: defaultChannels,
-      updatedAt: new Date().toISOString()
-    };
+    currentDayData = createDayData("class");
     await setDoc(dayRef, currentDayData);
   } else {
     currentDayData = daySnap.data();
-    if (!currentDayData.channels) currentDayData.channels = defaultChannels;
-    if (!currentDayData.tasks) currentDayData.tasks = classDayTasks;
+    currentDayData.tasks = currentDayData.tasks || [];
+    currentDayData.coach = currentDayData.coach || structuredClone(defaultCoach);
+    currentDayData.reminders = currentDayData.reminders || buildDefaultReminders();
   }
+
+  await loadAchievements();
+}
+
+function createDayData(type) {
+  return {
+    date: todayKey(),
+    dayType: type,
+    tasks: buildTasks(type),
+    comment: "",
+    mood: "focused",
+    energy: "medium",
+    tomorrowFocus: "",
+    coach: structuredClone(defaultCoach),
+    reminders: buildDefaultReminders(),
+    finished: false,
+    updatedAt: new Date().toISOString()
+  };
 }
 
 async function saveDayData() {
-  const dayRef = doc(db, "users", currentUser.uid, "days", todayKey());
   currentDayData.updatedAt = new Date().toISOString();
-  await setDoc(dayRef, currentDayData, { merge: true });
+  await setDoc(doc(db, "users", currentUser.uid, "days", todayKey()), currentDayData, { merge: true });
+}
+
+function buildTasks(type) {
+  if (type === "free") {
+    return [
+      t(settings.wakeTime, "Wake up. No excuses. No scrolling first."),
+      t("05:05", "Pray for 10 minutes and ask for strength."),
+      t("05:15", "Brainstorm today's mission and priorities."),
+      t("05:45", "Research content ideas for 3 global YouTube channels."),
+      t(settings.sportTime, "Sport: push-ups, stretching, body activation."),
+      t("07:00", "Deep work block 1: scripts, research, or coding."),
+      t("10:00", "Deep work block 2: editing or project building."),
+      t("12:30", "Cook, eat, reset focus."),
+      t("14:00", "Skill improvement and business research."),
+      t("17:00", "Review money plan and channel progress."),
+      t("18:00", "Editing / content production / cooking dinner."),
+      t("22:30", "Review the day and prepare tomorrow."),
+      t(settings.sleepTime, "Sleep on time.")
+    ];
+  }
+
+  if (type === "custom") {
+    return [
+      t(settings.wakeTime, "Wake up and protect the day."),
+      t("05:05", "Pray for 10 minutes."),
+      t("05:30", "Write custom agenda for this specific day."),
+      t(settings.sportTime, "Sport / push-ups."),
+      t("08:00", "Custom important work block."),
+      t("12:30", "Cook, eat, reset."),
+      t("18:00", "Editing / content production / important evening work."),
+      t("22:30", "Review day and plan tomorrow."),
+      t(settings.sleepTime, "Sleep on time.")
+    ];
+  }
+
+  return [
+    t(settings.wakeTime, "Wake up at 5:00 AM. No excuses."),
+    t("05:05", "Pray for 10 minutes."),
+    t("05:15", "Brainstorm today's tasks and discipline mission."),
+    t("05:45", "Research content ideas for 3 global YouTube channels."),
+    t(settings.sportTime, "Sport: push-ups / body activation."),
+    t("07:00", "Prepare for university."),
+    t(settings.classStart, "Attend class / study seriously."),
+    t("12:30", "Cook, eat, refresh, and return to class if needed."),
+    t(settings.classEnd, "Finish class and return home."),
+    t("18:00", "Edit videos / create content / cook dinner."),
+    t("22:30", "Review the day and write reflection."),
+    t(settings.sleepTime, "Sleep at 11:00 PM.")
+  ];
+}
+
+function t(time, title) {
+  return { time, title, done: false };
+}
+
+function buildDefaultReminders() {
+  return [
+    { time: settings.wakeTime || "05:00", text: "Wake up. Your future needs discipline today.", enabled: true, firedToday: false },
+    { time: "05:05", text: "Prayer time. Ask for strength, then work.", enabled: true, firedToday: false },
+    { time: "05:45", text: "Research content ideas for your channels.", enabled: true, firedToday: false },
+    { time: settings.sportTime || "06:30", text: "Sport time. Push-ups and body activation.", enabled: true, firedToday: false },
+    { time: "18:00", text: "Editing and content production block.", enabled: true, firedToday: false },
+    { time: "22:30", text: "Review the day and finish your achievement.", enabled: true, firedToday: false },
+    { time: settings.sleepTime || "23:00", text: "Sleep. Protect tomorrow.", enabled: true, firedToday: false }
+  ];
 }
 
 function renderAll() {
   todayDate.textContent = formatDate();
-  welcomeTitle.textContent = `Welcome back, ${currentUser.displayName || "Builder"}`;
-  const admin = isAdmin();
-  userRole.textContent = admin ? "Admin Mode" : "User Mode";
-  adminNav.style.display = admin ? "block" : "none";
+  welcomeTitle.textContent = `Welcome back, ${currentUser.displayName || "Iragena"}`;
   dayType.value = currentDayData.dayType || "class";
   dailyComment.value = currentDayData.comment || "";
-  adminEmailText.textContent = ADMIN_EMAIL;
+  moodInput.value = currentDayData.mood || "focused";
+  energyInput.value = currentDayData.energy || "medium";
+  tomorrowFocusInput.value = currentDayData.tomorrowFocus || "";
+
   renderTasks();
-  renderRoutine();
-  renderChannels();
   renderRules();
-  if (admin) loadAdminData();
+  renderChannelFocus();
+  renderCoach();
+  renderReminders();
+  fillSettings();
+  renderAchievements();
 }
 
 function renderTasks() {
@@ -303,7 +376,7 @@ function renderTasks() {
     const div = document.createElement("div");
     div.className = `task ${task.done ? "done" : ""}`;
     div.innerHTML = `
-      <input class="check" type="checkbox" ${task.done ? "checked" : ""} />
+      <input class="check" type="checkbox" ${task.done ? "checked" : ""}>
       <div class="task-time">${escapeHTML(task.time || "--")}</div>
       <div class="task-title">${escapeHTML(task.title)}</div>
       <button class="delete-task">Delete</button>
@@ -327,30 +400,19 @@ function renderTasks() {
   updateScore();
 }
 
-function updateScore() {
+function getScore() {
   const total = currentDayData.tasks.length || 1;
-  const done = currentDayData.tasks.filter(t => t.done).length;
-  const percent = Math.round((done / total) * 100);
-  completionScore.textContent = `${percent}%`;
+  const done = currentDayData.tasks.filter(task => task.done).length;
+  return Math.round((done / total) * 100);
+}
+
+function updateScore() {
+  completionScore.textContent = `${getScore()}%`;
 }
 
 generateAgendaBtn.addEventListener("click", async () => {
-  const type = dayType.value;
-  currentDayData.dayType = type;
-
-  if (type === "class") {
-    currentDayData.tasks = structuredClone(classDayTasks);
-  } else if (type === "free") {
-    currentDayData.tasks = structuredClone(freeDayTasks);
-  } else {
-    currentDayData.tasks = [
-      { time: "05:00", title: "Wake up and protect the day", done: false },
-      { time: "05:05", title: "Pray for 10 minutes", done: false },
-      { time: "05:30", title: "Write custom agenda for this specific day", done: false },
-      { time: "23:00", title: "Sleep at 11:00 PM", done: false }
-    ];
-  }
-
+  currentDayData.dayType = dayType.value;
+  currentDayData.tasks = buildTasks(dayType.value);
   await saveDayData();
   renderTasks();
 });
@@ -370,64 +432,193 @@ addTaskForm.addEventListener("submit", async (e) => {
 
 saveCommentBtn.addEventListener("click", async () => {
   currentDayData.comment = dailyComment.value.trim();
+  currentDayData.mood = moodInput.value;
+  currentDayData.energy = energyInput.value;
   await saveDayData();
-  saveStatus.textContent = "Saved.";
-  setTimeout(() => (saveStatus.textContent = ""), 1800);
+  saveStatus.textContent = "Reflection saved.";
+  setTimeout(() => saveStatus.textContent = "", 1800);
 });
 
 resetTodayBtn.addEventListener("click", async () => {
   if (!confirm("Reset today's checklist?")) return;
-  currentDayData.tasks = currentDayData.tasks.map(t => ({ ...t, done: false }));
+  currentDayData.tasks = currentDayData.tasks.map(task => ({ ...task, done: false }));
   await saveDayData();
   renderTasks();
 });
 
-function renderRoutine() {
-  routineTimeline.innerHTML = "";
-  baseRoutine.forEach(item => {
+finishDayBtn.addEventListener("click", async () => {
+  currentDayData.comment = dailyComment.value.trim();
+  currentDayData.mood = moodInput.value;
+  currentDayData.energy = energyInput.value;
+  currentDayData.tomorrowFocus = tomorrowFocusInput.value.trim();
+  currentDayData.finished = true;
+
+  const achievement = buildAchievement();
+  await setDoc(doc(db, "users", currentUser.uid, "achievements", todayKey()), achievement, { merge: true });
+  await saveDayData();
+  await loadAchievements();
+
+  dailyAdviceBox.classList.remove("hidden");
+  dailyAdviceBox.innerHTML = generateAdvice(achievement);
+  renderAchievements();
+  showSection("achievements");
+});
+
+function buildAchievement() {
+  const completed = currentDayData.tasks.filter(t => t.done);
+  const missed = currentDayData.tasks.filter(t => !t.done);
+  return {
+    date: todayKey(),
+    score: getScore(),
+    completedCount: completed.length,
+    missedCount: missed.length,
+    completedTasks: completed.map(t => t.title),
+    missedTasks: missed.map(t => t.title),
+    comment: currentDayData.comment || "",
+    mood: currentDayData.mood || "normal",
+    energy: currentDayData.energy || "medium",
+    tomorrowFocus: currentDayData.tomorrowFocus || "",
+    coach: currentDayData.coach || structuredClone(defaultCoach),
+    advice: generateAdviceText({ score: getScore(), missedTasks: missed.map(t => t.title), coach: currentDayData.coach }),
+    createdAt: new Date().toISOString()
+  };
+}
+
+function generateAdvice(achievement) {
+  return `
+    <h3>Today's Coaching Advice</h3>
+    <p>${escapeHTML(achievement.advice)}</p>
+    <p><strong>Tomorrow focus:</strong> ${escapeHTML(achievement.tomorrowFocus || "Protect the morning block and complete the first important task.")}</p>
+  `;
+}
+
+function generateAdviceText(achievement) {
+  const score = achievement.score;
+  const coach = achievement.coach || {};
+  const missed = achievement.missedTasks || [];
+
+  if (score >= 85) {
+    return "Strong execution today. Do not celebrate by relaxing too much. Repeat the same structure tomorrow, especially morning prayer, research, sport, and evening editing.";
+  }
+
+  if (score >= 65) {
+    return "Good movement, but not full control. Tomorrow, protect the first 3 hours of the day. If the morning is clean, the rest of the day becomes easier.";
+  }
+
+  if (score >= 40) {
+    return "You did not fail, but your execution was weak. Reduce talking, reduce phone checking, and start tomorrow with one serious task before anything else.";
+  }
+
+  return "This was a warning day. Your dreams are still alive, but dreams do not grow without execution. Tomorrow must be simple: wake up, pray, research one idea, do sport, and complete one content task.";
+}
+
+async function loadAchievements() {
+  const snap = await getDocs(collection(db, "users", currentUser.uid, "achievements"));
+  achievements = [];
+  snap.forEach(docSnap => achievements.push(docSnap.data()));
+  achievements.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+}
+
+function renderAchievements() {
+  totalDays.textContent = achievements.length;
+  currentStreak.textContent = calculateStreak();
+  averageScore.textContent = `${calculateAverage()}%`;
+  bestScore.textContent = `${calculateBest()}%`;
+
+  achievementList.innerHTML = "";
+
+  if (achievements.length === 0) {
+    achievementList.innerHTML = `<p class="muted">No achievements saved yet. Finish your first day.</p>`;
+    return;
+  }
+
+  achievements.forEach(item => {
     const div = document.createElement("div");
-    div.className = "timeline-item";
+    div.className = "history-card";
     div.innerHTML = `
-      <div class="timeline-time">${escapeHTML(item.time)}</div>
-      <div>${escapeHTML(item.title)}</div>
+      <h3>${escapeHTML(item.date)} — ${item.score}%</h3>
+      <p class="muted">Completed: ${item.completedCount || 0} | Missed: ${item.missedCount || 0} | Mood: ${escapeHTML(item.mood || "normal")} | Energy: ${escapeHTML(item.energy || "medium")}</p>
+      <p><strong>Comment:</strong> ${escapeHTML(item.comment || "No comment saved.")}</p>
+      <p><strong>Advice:</strong> ${escapeHTML(item.advice || "")}</p>
+      <p><strong>Tomorrow focus:</strong> ${escapeHTML(item.tomorrowFocus || "")}</p>
     `;
-    routineTimeline.appendChild(div);
+    achievementList.appendChild(div);
   });
 }
 
-function renderChannels() {
-  channelList.innerHTML = "";
-  currentDayData.channels.forEach(ch => {
+function calculateAverage() {
+  if (!achievements.length) return 0;
+  const sum = achievements.reduce((total, item) => total + Number(item.score || 0), 0);
+  return Math.round(sum / achievements.length);
+}
+
+function calculateBest() {
+  if (!achievements.length) return 0;
+  return Math.max(...achievements.map(item => Number(item.score || 0)));
+}
+
+function calculateStreak() {
+  if (!achievements.length) return 0;
+  const dates = new Set(achievements.map(a => a.date));
+  let streak = 0;
+  const d = new Date();
+
+  while (true) {
+    const key = d.toISOString().split("T")[0];
+    if (!dates.has(key)) break;
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+
+  return streak;
+}
+
+saveCoachBtn.addEventListener("click", async () => {
+  const coach = {};
+  coachChecks.forEach(check => coach[check.dataset.key] = check.checked);
+  coach.videoIdea = videoIdeaInput.value.trim();
+  currentDayData.coach = coach;
+  await saveDayData();
+  renderCoach();
+});
+
+function renderCoach() {
+  const coach = currentDayData.coach || structuredClone(defaultCoach);
+  coachChecks.forEach(check => check.checked = Boolean(coach[check.dataset.key]));
+  videoIdeaInput.value = coach.videoIdea || "";
+
+  const done = Object.entries(coach).filter(([key, value]) => key !== "videoIdea" && value === true).length;
+  let message = "Your channels grow from daily repetition. Research, script, edit, upload, learn, repeat.";
+
+  if (done >= 5) {
+    message = "Excellent channel work today. This is how invisible effort becomes visible growth.";
+  } else if (done >= 3) {
+    message = "Good progress. Tomorrow, add one more serious content action before evening.";
+  } else if (done >= 1) {
+    message = "You touched the mission, but lightly. Tomorrow, protect a full content block.";
+  } else {
+    message = "No channel progress saved yet. Your future audience cannot find work you never create.";
+  }
+
+  channelMotivationBox.innerHTML = `<strong>Coach:</strong> ${escapeHTML(message)}`;
+}
+
+function renderChannelFocus() {
+  channelFocusList.innerHTML = "";
+  settings.channels.forEach(channel => {
     const div = document.createElement("div");
     div.className = "channel-card";
-    const ideas = (ch.ideas || []).map(idea => `<li><strong>${escapeHTML(idea.title)}</strong> — ${escapeHTML(idea.notes || "")}</li>`).join("");
     div.innerHTML = `
-      <h3>${escapeHTML(ch.name)}</h3>
-      <p class="muted">${escapeHTML(ch.focus)}</p>
-      <ul>${ideas || "<li>No idea saved today.</li>"}</ul>
+      <h3>${escapeHTML(channel.name)}</h3>
+      <p class="muted">${escapeHTML(channel.focus)}</p>
     `;
-    channelList.appendChild(div);
+    channelFocusList.appendChild(div);
   });
 }
-
-addChannelIdeaForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const selected = channelSelect.value;
-  const channel = currentDayData.channels.find(c => c.name === selected);
-  channel.ideas.push({
-    title: ideaTitle.value.trim(),
-    notes: ideaNotes.value.trim(),
-    createdAt: new Date().toISOString()
-  });
-  ideaTitle.value = "";
-  ideaNotes.value = "";
-  await saveDayData();
-  renderChannels();
-});
 
 function renderRules() {
   rulesList.innerHTML = "";
-  disciplineRules.forEach(rule => {
+  settings.rules.forEach(rule => {
     const div = document.createElement("div");
     div.className = "rule-card";
     div.innerHTML = `
@@ -438,43 +629,144 @@ function renderRules() {
   });
 }
 
-document.querySelectorAll(".nav-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+enableNotificationsBtn.addEventListener("click", async () => {
+  if (!("Notification" in window)) {
+    notificationStatus.textContent = "Browser notifications are not supported here.";
+    return;
+  }
 
-    document.querySelectorAll(".page-section").forEach(section => {
-      section.classList.remove("active-section");
-    });
-
-    $(btn.dataset.section).classList.add("active-section");
-  });
+  const permission = await Notification.requestPermission();
+  notificationStatus.textContent = permission === "granted" ? "Notifications enabled." : "Notifications not allowed.";
 });
 
-function isAdmin() {
-  return currentUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+addDefaultRemindersBtn.addEventListener("click", async () => {
+  currentDayData.reminders = buildDefaultReminders();
+  await saveDayData();
+  renderReminders();
+});
+
+addReminderForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  currentDayData.reminders = currentDayData.reminders || [];
+  currentDayData.reminders.push({
+    time: reminderTimeInput.value,
+    text: reminderTextInput.value.trim(),
+    enabled: true,
+    firedToday: false
+  });
+  reminderTimeInput.value = "";
+  reminderTextInput.value = "";
+  await saveDayData();
+  renderReminders();
+});
+
+function renderReminders() {
+  reminderList.innerHTML = "";
+
+  if (!currentDayData.reminders || currentDayData.reminders.length === 0) {
+    reminderList.innerHTML = `<p class="muted">No reminders yet.</p>`;
+    return;
+  }
+
+  currentDayData.reminders.forEach((reminder, index) => {
+    const div = document.createElement("div");
+    div.className = "reminder-row";
+    div.innerHTML = `
+      <input class="check" type="checkbox" ${reminder.enabled ? "checked" : ""}>
+      <div class="reminder-time">${escapeHTML(reminder.time)}</div>
+      <div>${escapeHTML(reminder.text)}</div>
+      <button class="delete-reminder">Delete</button>
+    `;
+
+    div.querySelector(".check").addEventListener("change", async (e) => {
+      currentDayData.reminders[index].enabled = e.target.checked;
+      await saveDayData();
+      renderReminders();
+    });
+
+    div.querySelector(".delete-reminder").addEventListener("click", async () => {
+      currentDayData.reminders.splice(index, 1);
+      await saveDayData();
+      renderReminders();
+    });
+
+    reminderList.appendChild(div);
+  });
 }
 
-async function loadAdminData() {
-  if (!isAdmin()) return;
-  try {
-    const snap = await getDocs(collection(db, "users"));
-    usersCount.textContent = snap.size;
-    usersList.innerHTML = "";
-    snap.forEach(docSnap => {
-      const data = docSnap.data();
-      const div = document.createElement("div");
-      div.className = "user-row";
-      div.innerHTML = `
-        <span><strong>${escapeHTML(data.name || "User")}</strong></span>
-        <span>${escapeHTML(data.email || "")}</span>
-        <span>${escapeHTML(data.role || "user")}</span>
-      `;
-      usersList.appendChild(div);
-    });
-  } catch (error) {
-    usersList.innerHTML = `<p class="message">Admin data blocked. Check Firestore Rules.</p>`;
+let reminderInterval = null;
+
+function startReminderLoop() {
+  if (reminderInterval) clearInterval(reminderInterval);
+
+  reminderInterval = setInterval(async () => {
+    if (!currentDayData?.reminders) return;
+
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5);
+    let changed = false;
+
+    for (const reminder of currentDayData.reminders) {
+      if (reminder.enabled && !reminder.firedToday && reminder.time === currentTime) {
+        showReminder(reminder.text);
+        reminder.firedToday = true;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      await saveDayData();
+      renderReminders();
+    }
+  }, 30000);
+}
+
+function showReminder(text) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("Daily Roadmap Reminder", { body: text });
+  } else {
+    alert(`Reminder: ${text}`);
   }
+}
+
+function fillSettings() {
+  wakeTimeInput.value = settings.wakeTime || "05:00";
+  sleepTimeInput.value = settings.sleepTime || "23:00";
+  sportTimeInput.value = settings.sportTime || "06:30";
+  classStartInput.value = settings.classStart || "08:00";
+  classEndInput.value = settings.classEnd || "17:00";
+  moneyGoalInput.value = settings.moneyGoal || "";
+}
+
+settingsForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  settings.wakeTime = wakeTimeInput.value || "05:00";
+  settings.sleepTime = sleepTimeInput.value || "23:00";
+  settings.sportTime = sportTimeInput.value || "06:30";
+  settings.classStart = classStartInput.value || "08:00";
+  settings.classEnd = classEndInput.value || "17:00";
+  settings.moneyGoal = moneyGoalInput.value.trim();
+
+  await updateDoc(doc(db, "users", currentUser.uid), { settings });
+  currentDayData.tasks = buildTasks(currentDayData.dayType || "class");
+  currentDayData.reminders = buildDefaultReminders();
+  await saveDayData();
+
+  settingsStatus.textContent = "Settings saved.";
+  setTimeout(() => settingsStatus.textContent = "", 1800);
+  renderAll();
+});
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => showSection(btn.dataset.section));
+});
+
+function showSection(sectionId) {
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.section === sectionId));
+  document.querySelectorAll(".page-section").forEach(section => section.classList.toggle("active-section", section.id === sectionId));
+
+  if (sectionId === "achievements") renderAchievements();
 }
 
 function cleanFirebaseError(message) {

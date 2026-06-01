@@ -22,7 +22,7 @@ body {
   min-height: 100vh;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(245,185,66,0.16), transparent 30%),
+    radial-gradient(circle at top left, rgba(245,185,66,0.18), transparent 32%),
     linear-gradient(135deg, #050b14, #07111f 45%, #102744);
 }
 
@@ -47,8 +47,8 @@ button {
 }
 
 .auth-card {
-  width: min(440px, 100%);
-  background: rgba(5, 11, 20, 0.88);
+  width: min(460px, 100%);
+  background: rgba(5, 11, 20, 0.9);
   border: 1px solid var(--line);
   border-radius: 28px;
   padding: 34px;
@@ -125,8 +125,14 @@ input, textarea, select {
 }
 
 textarea {
-  min-height: 138px;
+  min-height: 120px;
   resize: vertical;
+}
+
+label {
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -134,7 +140,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 4px rgba(245,185,66,0.1);
 }
 
-button[type="submit"], #generateAgendaBtn, #saveCommentBtn {
+button[type="submit"], #generateAgendaBtn, #saveCommentBtn, #finishDayBtn, #enableNotificationsBtn {
   padding: 14px 18px;
   border-radius: 14px;
   font-weight: 800;
@@ -154,15 +160,24 @@ button[type="submit"], #generateAgendaBtn, #saveCommentBtn {
   color: var(--gold2);
 }
 
+.private-note {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(245,185,66,0.1);
+  border: 1px solid rgba(245,185,66,0.22);
+  color: var(--muted);
+}
+
 .dashboard {
   display: flex;
   min-height: 100vh;
 }
 
 .sidebar {
-  width: 280px;
+  width: 285px;
   padding: 24px;
-  background: rgba(5,11,20,0.92);
+  background: rgba(5,11,20,0.93);
   border-right: 1px solid var(--line);
   position: sticky;
   top: 0;
@@ -217,7 +232,7 @@ nav {
 .content {
   flex: 1;
   padding: 28px;
-  max-width: 1200px;
+  max-width: 1220px;
   margin: 0 auto;
 }
 
@@ -240,8 +255,8 @@ nav {
 }
 
 .score-card {
-  min-width: 120px;
-  min-height: 90px;
+  min-width: 130px;
+  min-height: 96px;
   border-radius: 22px;
   background: linear-gradient(135deg, rgba(245,185,66,0.24), rgba(255,255,255,0.06));
   border: 1px solid var(--line);
@@ -278,6 +293,11 @@ nav {
   grid-template-columns: 1.2fr 1fr;
 }
 
+.grid.four {
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  margin-bottom: 20px;
+}
+
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -293,6 +313,10 @@ nav {
     var(--panel);
 }
 
+.finish-panel {
+  border-color: rgba(245,185,66,0.35);
+}
+
 .panel h2 {
   margin-bottom: 12px;
   font-size: 24px;
@@ -306,12 +330,16 @@ nav {
   flex-wrap: wrap;
 }
 
+.inline-small {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0;
+}
+
 .agenda-controls label {
   flex: 1;
   min-width: 230px;
-  color: var(--muted);
-  display: grid;
-  gap: 8px;
 }
 
 .task-list {
@@ -320,7 +348,7 @@ nav {
   margin-top: 16px;
 }
 
-.task {
+.task, .reminder-row {
   display: grid;
   grid-template-columns: auto 80px 1fr auto;
   gap: 14px;
@@ -345,7 +373,7 @@ nav {
   accent-color: var(--gold);
 }
 
-.task-time {
+.task-time, .reminder-time {
   color: var(--gold2);
   font-weight: 800;
 }
@@ -354,7 +382,7 @@ nav {
   font-weight: 700;
 }
 
-.delete-task {
+.delete-task, .delete-reminder {
   background: rgba(255,107,107,0.14);
   color: #ffb3b3;
   padding: 9px 12px;
@@ -367,57 +395,36 @@ nav {
   background: rgba(255,255,255,0.08);
 }
 
-.timeline {
-  display: grid;
-  gap: 14px;
+.advice-box {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(245,185,66,0.1);
+  border: 1px solid rgba(245,185,66,0.25);
+  color: #fff5d1;
+  line-height: 1.7;
 }
 
-.timeline-item {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 18px;
-  padding: 16px;
-  background: rgba(255,255,255,0.055);
-  border-radius: 16px;
-  border: 1px solid var(--line);
-}
-
-.timeline-time {
-  color: var(--gold2);
-  font-weight: 900;
-}
-
-.channel-list, .rules-list, .users-list {
+.history-list, .channel-list, .rules-list, .reminder-list {
   display: grid;
   gap: 14px;
   margin-top: 18px;
 }
 
-.channel-card, .rule-card, .user-row {
+.history-card, .channel-card, .rule-card {
   background: rgba(255,255,255,0.055);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px;
 }
 
-.channel-card h3, .rule-card h3 {
+.history-card h3, .channel-card h3, .rule-card h3 {
   color: var(--gold2);
   margin-bottom: 8px;
 }
 
-.stack-form {
-  margin-top: 20px;
-}
-
-.admin-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(180px, 1fr));
-  gap: 14px;
-  margin: 18px 0;
-}
-
 .mini-card {
-  background: rgba(255,255,255,0.055);
+  background: rgba(14, 28, 49, 0.92);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px;
@@ -431,14 +438,41 @@ nav {
   overflow-wrap: anywhere;
 }
 
-.user-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+.mini-card span {
+  color: var(--muted);
 }
 
-@media (max-width: 860px) {
+.coach-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.coach-grid label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: rgba(255,255,255,0.055);
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.coach-grid input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--gold);
+}
+
+.settings-grid {
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+}
+
+.settings-grid button {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
   .dashboard {
     display: block;
   }
@@ -465,25 +499,16 @@ nav {
     padding: 18px;
   }
 
-  .topbar {
-    align-items: flex-start;
-  }
-
-  .grid.two {
+  .grid.two, .grid.four, .coach-grid, .settings-grid {
     grid-template-columns: 1fr;
   }
 
-  .task {
+  .task, .reminder-row {
     grid-template-columns: auto 68px 1fr;
   }
 
-  .delete-task {
+  .delete-task, .delete-reminder {
     grid-column: 1 / -1;
-  }
-
-  .timeline-item {
-    grid-template-columns: 1fr;
-    gap: 6px;
   }
 }
 
@@ -499,6 +524,7 @@ nav {
 
   .topbar {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .score-card {
@@ -510,7 +536,7 @@ nav {
     border-radius: 20px;
   }
 
-  .admin-grid {
+  .inline-small {
     grid-template-columns: 1fr;
   }
 }

@@ -1,30 +1,37 @@
-# Daily Roadmap Routine
+# My Daily Roadmap Routine - Personal Pro V3
 
-A modern mobile-friendly routine website with real Firebase login.
+Private personal discipline system for one admin user.
 
-## What it includes
+## V3 features
 
-- Real email/password signup and login using Firebase Authentication
-- Firestore database for saving each user's daily routine
-- Admin view for the admin email
+- Private admin-only access
 - Daily checklist
-- Daily comments/reflection
-- Class day / no-class day / custom agenda
-- 3 YouTube channel idea tracker
+- Class day / no class day / custom day agendas
+- Daily reflection with mood and energy
+- Finish My Day button
+- Daily achievement archive
+- Score, streak, average score, best score
+- Rule-based daily advice
+- Channel Growth Coach
+- Browser/on-site reminders
 - Discipline rules
-- Responsive design for phone and desktop
-- GitHub Pages ready
-
-## Setup
-
-1. Create Firebase project.
-2. Enable Authentication > Email/Password.
-3. Create Cloud Firestore database.
-4. Replace the config inside `firebase-config.js`.
-5. In Firestore Rules, paste the content from `firestore.rules`.
-6. Upload these files to GitHub.
-7. Enable GitHub Pages from Settings > Pages.
+- Routine settings
 
 ## Important
 
-GitHub Pages hosts the frontend only. Firebase provides the real login and database.
+This version is personal-only. Update Firestore rules with the content from `firestore.rules`.
+Only this email can read/write data:
+
+iragenacoach@gmail.com
+
+## Upload to GitHub
+
+Replace these files in your repository:
+
+- index.html
+- style.css
+- app.js
+- firestore.rules
+- README.md
+
+Keep firebase-config.js as long as it contains your real Firebase config.
