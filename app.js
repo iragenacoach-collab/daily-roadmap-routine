@@ -1,11 +1,16 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-messaging.js";
 import { firebaseConfig, ADMIN_EMAIL } from "./firebase-config.js";
+import { FCM_VAPID_KEY } from "./fcm-config.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+let messaging = null;
+let serviceWorkerRegistration = null;
+let deferredInstallPrompt = null;
 
 let isSignup = false, currentUser = null, currentDayData = null, settings = null, achievements = [];
 let currentDateKey = localDateKey(), editingTaskIndex = null, aiModule = null;
@@ -30,6 +35,25 @@ const defaultSettings = {
   ]
 };
 const defaultCoach = {research:false, script:false, visuals:false, edit:false, upload:false, competitors:false, videoIdea:""};
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const installBtn = $("installAppBtn");
+  if (installBtn) installBtn.textContent = "Install App";
+});
+
+async function registerPWAServiceWorker() {
+  if (!("serviceWorker" in navigator)) return null;
+  try {
+    serviceWorkerRegistration = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+    return serviceWorkerRegistration;
+  } catch (error) {
+    console.warn("Service worker registration failed:", error);
+    return null;
+  }
+}
+
 
 function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;}
 function formatDate(){return new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});}
@@ -60,7 +84,7 @@ onAuthStateChanged(auth, async user=>{
   if(!user){$("dashboard").classList.add("hidden");$("authScreen").classList.remove("hidden");return;}
   if(!isAdminEmail(user.email)){await signOut(auth);return;}
   $("authScreen").classList.add("hidden");$("dashboard").classList.remove("hidden");
-  await ensureUserDoc(user); await loadAllData(); renderAll(); startReminderLoop(); startMidnightWatcher();
+  await registerPWAServiceWorker(); await ensureUserDoc(user); await loadAllData(); renderAll(); startReminderLoop(); startMidnightWatcher(); setupForegroundMessages();
 });
 
 async function ensureUserDoc(user){
@@ -148,6 +172,146 @@ $("aiChannelCoachBtn").onclick=()=>aiBox("channel",$("aiChannelCoachBox"));
 $("aiWeeklyReviewBtn").onclick=()=>aiBox("weekly",$("aiWeeklyReviewBox"));
 function buildPrompt(type){const completed=currentDayData.tasks.filter(t=>t.done).map(t=>t.title), missed=currentDayData.tasks.filter(t=>!t.done).map(t=>t.title);const base=`You are a strict but constructive discipline coach for Iragena. Mission: ${settings.moneyGoal}. Routine: sleep 11 PM, wake 5 AM, prayer, brainstorming, content research, sport, university/class when available, evening editing/cooking, review. Channels: DiraIQ = truth behind surroundings and what the world will not teach you; 5 Highlight = 5-minute football highlights; GeoMystery = geography and mysteries. Rules: avoid dating 3 years, avoid useless status/memes, avoid too much talking/groups, live privately, control emotions, focus on YouTube until $100K in 3 years. Today score ${getScore()}%. Mood ${currentDayData.mood}. Energy ${currentDayData.energy}. Reflection: ${currentDayData.comment||"none"}. Completed: ${completed.join("; ")||"none"}. Missed: ${missed.join("; ")||"none"}. Channel progress: ${JSON.stringify(currentDayData.coach)}. Recent achievements: ${JSON.stringify(achievements.slice(0,7))}. Be direct, short, practical, motivational. Use English with a little Kinyarwanda only where useful.`; if(type==="tomorrow")return base+" Give tomorrow plan: warning, first 3 hours, each channel action, one thing to avoid, command."; if(type==="channel")return base+" Give channel growth coaching for DiraIQ, 5 Highlight, and GeoMystery."; if(type==="weekly")return base+" Analyze weekly pattern, strongest habit, weakest habit, weekly improvement system, 5-line discipline message."; return base+" Give today review: score interpretation, biggest weakness, best win, tomorrow advice, YouTube motivation, sentence before sleeping."; }
 function fallback(type){ if(type==="channel")return"DiraIQ needs one truth-based idea. 5 Highlight needs one football highlight plan. GeoMystery needs one mysterious/geography topic. Do not wait to feel ready."; if(type==="tomorrow")return"Tomorrow: wake up, pray, research one idea, do sport, and finish one real YouTube action before distractions."; if(type==="weekly")return"Your week improves when your mornings improve. Protect wake-up, prayer, research, sport, and evening review."; return generateAdviceText(getScore()); }
+
+
+const installAppBtn = $("installAppBtn");
+if (installAppBtn) {
+  installAppBtn.onclick = async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      $("pushStatus").textContent = "Install prompt completed.";
+    } else {
+      $("pushStatus").textContent = "If install button does not open, use browser menu: Add to Home Screen / Install app.";
+    }
+  };
+}
+
+const sendTestLocalBtn = $("sendTestLocalBtn");
+if (sendTestLocalBtn) {
+  sendTestLocalBtn.onclick = async () => {
+    if (!("Notification" in window)) {
+      $("pushStatus").textContent = "Notifications are not supported on this browser.";
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      $("pushStatus").textContent = "Notifications are blocked. Enable them in phone/browser settings.";
+      return;
+    }
+
+    new Notification("Daily Roadmap Reminder", {
+      body: "Test notification: protect your focus today.",
+      icon: "./icon-192.png",
+      badge: "./badge-72.png"
+    });
+
+    $("pushStatus").textContent = "Test notification sent.";
+  };
+}
+
+const copyTokenBtn = $("copyTokenBtn");
+if (copyTokenBtn) {
+  copyTokenBtn.onclick = async () => {
+    const box = $("fcmTokenBox");
+    if (!box || !box.value) {
+      $("pushStatus").textContent = "No token to copy yet. Enable push notifications first.";
+      return;
+    }
+    await navigator.clipboard.writeText(box.value);
+    $("pushStatus").textContent = "FCM token copied.";
+  };
+}
+
+const enablePushBtn = $("enablePushBtn");
+if (enablePushBtn) {
+  enablePushBtn.onclick = enablePushNotifications;
+}
+
+async function enablePushNotifications() {
+  const status = $("pushStatus");
+  const tokenBox = $("fcmTokenBox");
+
+  try {
+    if (!FCM_VAPID_KEY || FCM_VAPID_KEY.includes("PASTE_")) {
+      status.textContent = "Add your Web Push certificate key in fcm-config.js first.";
+      return;
+    }
+
+    const supported = await isSupported();
+    if (!supported) {
+      status.textContent = "Firebase push messaging is not supported on this browser/device.";
+      return;
+    }
+
+    if (!("Notification" in window)) {
+      status.textContent = "Notifications are not supported here.";
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      status.textContent = "Notifications blocked. Allow notifications in browser/phone settings.";
+      return;
+    }
+
+    if (!serviceWorkerRegistration) {
+      serviceWorkerRegistration = await registerPWAServiceWorker();
+    }
+
+    messaging = getMessaging(app);
+    const token = await getToken(messaging, {
+      vapidKey: FCM_VAPID_KEY,
+      serviceWorkerRegistration
+    });
+
+    if (!token) {
+      status.textContent = "No FCM token received. Try again after reinstalling/refreshing app.";
+      return;
+    }
+
+    if (tokenBox) tokenBox.value = token;
+
+    await setDoc(doc(db, "users", currentUser.uid, "fcmTokens", token), {
+      token,
+      userAgent: navigator.userAgent,
+      platform: navigator.platform || "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+
+    status.textContent = "Push notifications enabled and device token saved.";
+  } catch (error) {
+    status.textContent = "Push setup error: " + cleanError(error.message || error);
+  }
+}
+
+async function setupForegroundMessages() {
+  try {
+    const supported = await isSupported();
+    if (!supported) return;
+
+    messaging = getMessaging(app);
+    onMessage(messaging, (payload) => {
+      const title = payload?.notification?.title || "Daily Roadmap Reminder";
+      const body = payload?.notification?.body || payload?.data?.body || "You have a roadmap reminder.";
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, {
+          body,
+          icon: "./icon-192.png",
+          badge: "./badge-72.png"
+        });
+      } else {
+        alert(`${title}: ${body}`);
+      }
+    });
+  } catch (error) {
+    console.warn("Foreground messaging not ready:", error);
+  }
+}
+
 
 $("enableNotificationsBtn").onclick=async()=>{if(!("Notification"in window)){$("notificationStatus").textContent="Notifications not supported.";return;}const p=await Notification.requestPermission();$("notificationStatus").textContent=p==="granted"?"Notifications enabled.":"Notifications not allowed.";};
 $("addDefaultRemindersBtn").onclick=async()=>{currentDayData.reminders=buildDefaultReminders();await saveDayData();renderReminders();};

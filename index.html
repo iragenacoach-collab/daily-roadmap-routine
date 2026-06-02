@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Daily Roadmap Routine</title>
   <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#07111f" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -184,15 +187,42 @@
       </section>
 
       <section id="reminders" class="page-section">
-        <div class="panel hero-panel"><h2>Reminder Center</h2><p>Works while the website is open. Midnight reset works automatically when the date changes.</p><button id="enableNotificationsBtn">Enable Browser Notifications</button><p id="notificationStatus" class="message"></p></div>
+        <div class="panel hero-panel">
+          <h2>PWA + Lock-Screen Notifications</h2>
+          <p>This turns your roadmap into an installable phone app and connects it with Firebase Cloud Messaging for lock-screen push notifications.</p>
+          <div class="button-row">
+            <button id="installAppBtn" class="secondary">Install App</button>
+            <button id="enableNotificationsBtn">Enable Browser Notifications</button>
+            <button id="enablePushBtn" class="secondary-ai">Enable Push Notifications</button>
+            <button id="sendTestLocalBtn" class="secondary">Test Lock-Screen Notification</button>
+          </div>
+          <p id="notificationStatus" class="message"></p>
+          <p id="pushStatus" class="message"></p>
+          <div class="private-note">
+            <strong>Important:</strong> for reminders while the app is closed, you must deploy the optional Firebase Functions folder or send a test notification from Firebase Console.
+          </div>
+        </div>
+
         <div class="panel">
-          <div class="panel-heading"><h2>Routine Reminders</h2><button id="addDefaultRemindersBtn" class="secondary">Load Routine Reminders</button></div>
+          <div class="panel-heading">
+            <h2>Routine Reminders</h2>
+            <button id="addDefaultRemindersBtn" class="secondary">Load Routine Reminders</button>
+          </div>
           <div id="reminderList" class="reminder-list"></div>
           <form id="addReminderForm" class="inline-form">
             <input id="reminderTimeInput" type="time" required />
             <input id="reminderTextInput" type="text" placeholder="Reminder message" required />
             <button type="submit">Add Reminder</button>
           </form>
+        </div>
+
+        <div class="panel">
+          <h2>FCM Device Token</h2>
+          <p class="muted">This token lets Firebase send notifications to this phone/browser. It is saved privately in Firestore for your admin account.</p>
+          <textarea id="fcmTokenBox" readonly placeholder="Your FCM token will appear here after enabling push notifications."></textarea>
+          <div class="button-row">
+            <button id="copyTokenBtn" class="secondary">Copy Token</button>
+          </div>
         </div>
       </section>
 
