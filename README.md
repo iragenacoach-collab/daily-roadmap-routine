@@ -63,3 +63,14 @@ This update fixes:
 - Sidebar/mobile nav layout
 - Adds cleaner linear-gradient styling
 - Better small-screen spacing
+
+
+## V9 Task Notifications
+
+Every activity in Today can now trigger notifications:
+- 5 minutes before the activity starts
+- At the exact activity time
+- Works while the PWA/browser is open
+- Optional Firebase Functions scheduler also sends task notifications when app is closed, if deployed on Blaze plan
+
+Use time format like 05:00, 18:00, 22:30 for notification detection.
