@@ -1,254 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- V12 FINAL MERGE PRO: Firebase login, Firestore, PWA, FCM, AI coach, routine, agenda, habits, goals, channels, achievements, downloads, midnight reset. -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ff6f91" />
   <title>My Daily Roadmap Routine</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#07111f" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <section id="authScreen" class="auth-screen">
-    <div class="auth-card">
-      <div class="brand-badge">DR</div>
-      <h1>My Daily Roadmap</h1>
-      <p class="muted">Private discipline system for focus, daily achievements, reminders, and 3 YouTube channels.</p>
-      <div class="tabs">
-        <button class="tab active" id="loginTab">Login</button>
-        <button class="tab" id="signupTab">Create Admin</button>
+    <div class="auth-wrap">
+      <div class="auth-brand"><div class="logo">DR</div><div><h1>Daily Roadmap</h1><p>Private discipline app for routine, channels, AI coaching and reminders.</p></div></div>
+      <div class="auth-card">
+        <div class="auth-tabs"><button id="loginTab" class="tab active" type="button">Login</button><button id="signupTab" class="tab" type="button">Create Admin</button></div>
+        <form id="authForm" class="stack">
+          <input id="nameInput" class="hidden" type="text" placeholder="Your name" autocomplete="name" />
+          <input id="emailInput" type="email" placeholder="Admin email" autocomplete="email" required />
+          <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" required />
+          <button id="authSubmit" class="btn primary" type="submit">Login</button>
+        </form>
+        <button id="resetPasswordBtn" class="text-btn" type="button">Forgot password?</button>
+        <p id="authMessage" class="msg"></p>
+        <div class="note"><i class="fa-solid fa-lock"></i> Only your admin email can access this app.</div>
       </div>
-      <form id="authForm">
-        <input id="nameInput" class="hidden" type="text" placeholder="Your name" />
-        <input id="emailInput" type="email" placeholder="Admin email" required />
-        <input id="passwordInput" type="password" placeholder="Password" required />
-        <button type="submit" id="authSubmit">Login</button>
-      </form>
-      <button class="link-button" id="resetPasswordBtn">Forgot password?</button>
-      <p id="authMessage" class="message"></p>
-      <div class="private-note"><strong>Private:</strong> only your admin email can access this roadmap.</div>
     </div>
   </section>
 
-  <main id="dashboard" class="dashboard hidden">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="brand-badge small">DR</div>
-        <div><h2>My Roadmap</h2><p>Admin Mode</p></div>
+  <main id="appShell" class="app-shell hidden">
+    <div class="app-frame">
+      <div class="status"><span id="clockText">10:30 AM</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+      <div class="scroll-area">
+        <section id="homeScreen" class="view active">
+          <header class="app-head grad-home"><div class="head-top"><div class="user"><div class="avatar"><i class="fa-solid fa-sun"></i></div><div><span id="dateText">Today</span><h2 id="welcomeTitle">Welcome</h2></div></div><button class="icon bell-dot" type="button"><i class="fa-solid fa-bell"></i></button></div><h1>Build today with discipline.</h1><p>Your day resets automatically at midnight. Start fresh and execute.</p></header>
+          <div class="content">
+            <section class="card focus-card float-card"><div id="scoreCircle" class="circle" style="--progress:0"><span id="completionScore">0%</span></div><div><h3>Today's execution</h3><p><b id="doneCount">0</b> done • <b id="leftCount">0</b> left</p><small id="nextTaskLine">Next focus: —</small></div></section>
+            <div class="section-title"><h3>Quick Habits</h3><button id="downloadTodayBtn" class="chip-btn" type="button"><i class="fa-solid fa-download"></i> Today</button></div>
+            <div id="quickHabitPills" class="pill-wrap"></div>
+            <div class="section-title"><h3>Top Activities</h3><button class="chip-btn nav-go" data-go="agendaScreen" type="button">See all</button></div>
+            <div id="homeTaskList" class="list"></div>
+            <section class="card"><div class="section-title tight"><h3>Daily Reflection</h3><button id="saveReflectionBtn" class="chip-btn" type="button">Save</button></div><textarea id="dailyComment" placeholder="What happened today? What must improve tomorrow?"></textarea><div class="two"><label>Mood<select id="moodInput"><option value="focused">Focused</option><option value="normal">Normal</option><option value="tired">Tired</option><option value="distracted">Distracted</option><option value="strong">Strong</option></select></label><label>Energy<select id="energyInput"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label></div><p id="saveStatus" class="msg"></p></section>
+            <button id="finishDayBtn" class="btn wide pink" type="button"><i class="fa-solid fa-trophy"></i> Finish My Day & Save Achievement</button>
+          </div>
+        </section>
+
+        <section id="agendaScreen" class="view">
+          <header class="app-head grad-agenda"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Daily plan</span><h2>Agenda</h2></div><button id="resetTodayBtn" class="icon" type="button"><i class="fa-solid fa-rotate"></i></button></div><h1>Plan hour by hour.</h1><p>Every timed activity can remind you before and when it starts.</p></header>
+          <div class="content"><section class="card float-card"><div class="section-title tight"><h3 id="monthLabel">This Month</h3><span class="chip-btn">Calendar</span></div><div id="miniCalendar" class="calendar"></div></section><section class="notice"><i class="fa-solid fa-bell"></i><div><b>Smart reminder</b><span id="reminderPreview">Next activity will appear here.</span></div></section><div class="section-title"><h3>Activities</h3><div class="actions"><button id="generateAgendaBtn" class="chip-btn" type="button">Default</button><button id="openTaskModalBtn" class="chip-btn" type="button"><i class="fa-solid fa-plus"></i> Add</button></div></div><label class="select-card">Day Type<select id="dayType"><option value="class">University / Class Day</option><option value="free">No Class / Deep Work Day</option><option value="custom">Custom Day</option></select></label><div id="agendaTaskList" class="list"></div></div>
+        </section>
+
+        <section id="statsScreen" class="view">
+          <header class="app-head grad-habits"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Consistency</span><h2>Habits</h2></div><button class="icon bell-dot" type="button"><i class="fa-solid fa-bell"></i></button></div><h1>Small habits. Big future.</h1><p>Track prayer, sport, water, reading, focus and sleep.</p></header>
+          <div class="content"><div class="stats float-card"><section class="stat"><i class="fa-solid fa-fire-flame-curved fire"></i><b id="streakCount">0</b><span>day streak</span></section><section class="stat"><i class="fa-solid fa-brain"></i><b id="focusScore">0%</b><span>focus score</span></section></div><div class="section-title"><h3>Habit Check-off</h3><span class="chip-btn">Today</span></div><div id="habitGrid" class="habit-grid"></div><section class="card bars"><div class="bar-head"><span><i class="fa-solid fa-droplet"></i> Water Intake</span><b id="waterPercent">0%</b></div><div class="bar"><div id="waterBar" class="fill teal" style="--value:0%"></div></div><div class="bar-head"><span><i class="fa-solid fa-chart-line"></i> Focus Score</span><b id="focusPercent2">0%</b></div><div class="bar"><div id="focusBar" class="fill purple" style="--value:0%"></div></div></section><div class="section-title"><h3>Weekly Heatmap</h3><span class="chip-btn">Progress</span></div><div id="heatmap" class="heatmap card"></div></div>
+        </section>
+
+        <section id="goalsScreen" class="view">
+          <header class="app-head grad-goals"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Mission</span><h2>Goals</h2></div><button id="downloadArchiveBtn" class="icon" type="button"><i class="fa-solid fa-download"></i></button></div><h1>Goals become real through routine.</h1><p>3 channels. $100K mission. Daily execution only.</p></header>
+          <div class="content"><section class="notice float-card greenish"><i class="fa-solid fa-bullseye"></i><div><b>$100K Mission</b><span>YouTube discipline plan • 3-year focus</span></div></section><div class="section-title"><h3>3 Channel System</h3><span class="chip-btn">Global</span></div><div id="channelList" class="list"></div><section class="card"><div class="section-title tight"><h3>Today's YouTube Execution</h3><button id="saveCoachBtn" class="chip-btn" type="button">Save</button></div><div id="coachGrid" class="coach-grid"></div><textarea id="videoIdeaInput" placeholder="Tomorrow's video idea / channel focus..."></textarea><p id="channelMotivationBox" class="mini"></p></section><div class="section-title"><h3>Achievements</h3><button id="downloadAllCSVBtn" class="chip-btn" type="button">CSV</button></div><div id="achievementList" class="list"></div></div>
+        </section>
+
+        <section id="moreScreen" class="view">
+          <header class="app-head grad-more"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Tools</span><h2>More</h2></div><button id="logoutBtn" class="icon danger" type="button"><i class="fa-solid fa-right-from-bracket"></i></button></div><h1>AI coach, reminders, settings.</h1><p>Use the tools that keep you disciplined even when motivation is low.</p></header>
+          <div class="content"><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-brain"></i> AI Discipline Coach</h3></div><div class="tool-grid"><button id="aiDailyReviewBtn" class="tool" type="button">Daily Review</button><button id="aiTomorrowPlanBtn" class="tool" type="button">Tomorrow Plan</button><button id="aiChannelCoachBtn" class="tool" type="button">Channel Coach</button><button id="aiWeeklyReviewBtn" class="tool" type="button">Weekly Review</button></div><div id="aiOutputBox" class="ai-output">AI response will appear here.</div></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-bell"></i> Notifications</h3></div><div class="tool-grid one"><button id="installAppBtn" class="tool purple" type="button">Install App</button><button id="enableNotificationsBtn" class="tool" type="button">Enable Browser Notifications</button><button id="enablePushBtn" class="tool" type="button">Enable Push Notifications</button><button id="sendTestLocalBtn" class="tool" type="button">Test Lock-Screen Notification</button></div><p id="notificationStatus" class="msg"></p><p id="pushStatus" class="msg"></p><textarea id="fcmTokenBox" readonly placeholder="FCM token appears here after enabling push."></textarea><button id="copyTokenBtn" class="small-wide" type="button">Copy Token</button></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-clock"></i> Reminder List</h3><button id="addDefaultRemindersBtn" class="chip-btn" type="button">Load</button></div><div id="reminderList" class="list"></div><form id="addReminderForm" class="mini-form"><input id="reminderTimeInput" type="time" required><input id="reminderTextInput" type="text" placeholder="Reminder message" required><button type="submit"><i class="fa-solid fa-plus"></i></button></form></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-gear"></i> Routine Settings</h3></div><form id="settingsForm" class="settings"><label>Wake<input id="wakeTimeInput" type="time"></label><label>Sleep<input id="sleepTimeInput" type="time"></label><label>Sport<input id="sportTimeInput" type="time"></label><label>Class Start<input id="classStartInput" type="time"></label><label>Class End<input id="classEndInput" type="time"></label><label class="full">Money Goal<input id="moneyGoalInput" type="text"></label><button class="btn wide purple full" type="submit">Save Settings</button></form><p id="settingsStatus" class="msg"></p></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-shield-heart"></i> Discipline Rules</h3></div><div id="rulesList" class="list"></div></section></div>
+        </section>
       </div>
-      <nav class="side-nav">
-        <button data-section="today" class="nav-btn active">Today</button>
-        <button data-section="achievements" class="nav-btn">Archive</button>
-        <button data-section="coach" class="nav-btn">Channels</button>
-        <button data-section="aiCoach" class="nav-btn">AI Coach</button>
-        <button data-section="reminders" class="nav-btn">Reminders</button>
-        <button data-section="rules" class="nav-btn">Rules</button>
-        <button data-section="settings" class="nav-btn">Settings</button>
-      </nav>
-      <button class="logout" id="logoutBtn">Logout</button>
-    </aside>
-
-    <section class="content">
-      <header class="topbar">
-        <div>
-          <p class="date" id="todayDate"></p>
-          <h1 id="welcomeTitle">Welcome back</h1>
-          <p class="muted">At midnight, the app automatically opens a fresh day with default activities.</p>
-        </div>
-        <div class="score-card"><span id="completionScore">0%</span><small>today score</small></div>
-      </header>
-
-      <section id="today" class="page-section active-section">
-        <div class="smart-grid">
-          <div class="mini-card"><strong id="todayDoneCount">0</strong><span>done</span></div>
-          <div class="mini-card"><strong id="todayMissedCount">0</strong><span>left</span></div>
-          <div class="mini-card"><strong id="todayDayType">Class</strong><span>day mode</span></div>
-          <div class="mini-card"><strong id="nextTaskText">—</strong><span>next focus</span></div>
-        </div>
-
-        <div class="grid two">
-          <div class="panel hero-panel">
-            <h2>Today Command Center</h2>
-            <p>Your routine is the system that protects your future. Complete the checklist, save reflection, then finish the day.</p>
-            <div class="agenda-controls">
-              <label>Day Type
-                <select id="dayType">
-                  <option value="class">University / Class Day</option>
-                  <option value="free">No Class / Deep Work Day</option>
-                  <option value="custom">Custom Day</option>
-                </select>
-              </label>
-              <button id="generateAgendaBtn">Generate Default Agenda</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h2>Daily Reflection</h2>
-            <textarea id="dailyComment" placeholder="What happened today? What did you learn? What must improve tomorrow?"></textarea>
-            <div class="inline-small">
-              <label>Mood
-                <select id="moodInput">
-                  <option value="focused">Focused</option><option value="normal">Normal</option>
-                  <option value="tired">Tired</option><option value="distracted">Distracted</option><option value="strong">Strong</option>
-                </select>
-              </label>
-              <label>Energy
-                <select id="energyInput"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
-              </label>
-            </div>
-            <button id="saveCommentBtn">Save Reflection</button>
-            <p id="saveStatus" class="message"></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-heading">
-            <h2>Today's Activities</h2>
-            <div class="button-row compact">
-              <button id="downloadTodayBtn" class="secondary">Download Today</button>
-              <button id="resetTodayBtn" class="secondary danger-soft">Reset To Default</button>
-            </div>
-          </div>
-          <div id="taskList" class="task-list"></div>
-        </div>
-
-        <div class="panel">
-          <h2>Add / Edit Activity</h2>
-          <form id="addTaskForm" class="inline-form">
-            <input id="newTaskTime" type="text" placeholder="Time e.g. 14:00" />
-            <input id="newTaskTitle" type="text" placeholder="Activity title" required />
-            <button type="submit" id="taskSubmitBtn">Add Activity</button>
-            <button type="button" id="cancelEditTaskBtn" class="secondary hidden">Cancel Edit</button>
-          </form>
-        </div>
-
-        <div class="panel finish-panel">
-          <h2>Finish My Day</h2>
-          <p class="muted">Save today as an achievement, generate advice, and create tomorrow's focus.</p>
-          <textarea id="tomorrowFocusInput" placeholder="Tomorrow focus: what is the most important thing you must protect?"></textarea>
-          <div class="button-row">
-            <button id="finishDayBtn">Finish My Day & Save Achievement</button>
-            <button id="generateAIAdviceBtn" class="secondary-ai" type="button">Generate AI Advice</button>
-          </div>
-          <div id="dailyAdviceBox" class="advice-box hidden"></div>
-        </div>
-      </section>
-
-      <section id="achievements" class="page-section">
-        <div class="smart-grid">
-          <div class="mini-card"><strong id="totalDays">0</strong><span>saved days</span></div>
-          <div class="mini-card"><strong id="currentStreak">0</strong><span>day streak</span></div>
-          <div class="mini-card"><strong id="averageScore">0%</strong><span>average score</span></div>
-          <div class="mini-card"><strong id="bestScore">0%</strong><span>best score</span></div>
-        </div>
-        <div class="panel">
-          <div class="panel-heading">
-            <h2>Daily Achievement Archive</h2>
-            <div class="button-row compact">
-              <button id="downloadAllCSVBtn" class="secondary">Download CSV</button>
-              <button id="downloadAllJSONBtn" class="secondary">Download JSON</button>
-            </div>
-          </div>
-          <div id="achievementList" class="history-list"></div>
-        </div>
-      </section>
-
-      <section id="coach" class="page-section">
-        <div class="panel hero-panel"><h2>Channel Growth Coach</h2><p>Three channels. Three missions. Daily execution is the only path.</p></div>
-        <div class="panel">
-          <h2>Today's YouTube Execution</h2>
-          <div class="coach-grid">
-            <label><input type="checkbox" class="coach-check" data-key="research"> Researched content ideas</label>
-            <label><input type="checkbox" class="coach-check" data-key="script"> Wrote or improved script</label>
-            <label><input type="checkbox" class="coach-check" data-key="visuals"> Created visual prompts / clip plan</label>
-            <label><input type="checkbox" class="coach-check" data-key="edit"> Edited video or prepared assets</label>
-            <label><input type="checkbox" class="coach-check" data-key="upload"> Uploaded / scheduled content</label>
-            <label><input type="checkbox" class="coach-check" data-key="competitors"> Studied competitors</label>
-          </div>
-          <textarea id="videoIdeaInput" placeholder="Tomorrow's video idea / channel focus..."></textarea>
-          <button id="saveCoachBtn">Save Channel Progress</button>
-          <div id="channelMotivationBox" class="advice-box"></div>
-        </div>
-        <div class="panel"><h2>My 3 Channel Niches</h2><div id="channelFocusList" class="channel-list"></div></div>
-      </section>
-
-      <section id="aiCoach" class="page-section">
-        <div class="panel hero-panel"><h2>Gemini AI Discipline Coach</h2><p>Analyzes daily checklist, missed tasks, mood, energy, reflection, channel progress, and saved achievements.</p></div>
-        <div class="grid two">
-          <div class="panel"><h2>AI Daily Review</h2><p class="muted">Use this after or before finishing your day.</p><button id="aiDailyReviewBtn">Generate AI Daily Review</button><div id="aiDailyReviewBox" class="ai-output"></div></div>
-          <div class="panel"><h2>AI Tomorrow Plan</h2><p class="muted">Get a focused plan for tomorrow.</p><button id="aiTomorrowPlanBtn">Generate Tomorrow Plan</button><div id="aiTomorrowPlanBox" class="ai-output"></div></div>
-        </div>
-        <div class="grid two">
-          <div class="panel"><h2>AI Channel Motivation</h2><p class="muted">Specific next actions for DiraIQ, 5 Highlight, and GeoMystery.</p><button id="aiChannelCoachBtn">Generate Channel Coaching</button><div id="aiChannelCoachBox" class="ai-output"></div></div>
-          <div class="panel"><h2>AI Weekly Review</h2><p class="muted">Uses saved achievements to identify patterns.</p><button id="aiWeeklyReviewBtn">Generate Weekly Review</button><div id="aiWeeklyReviewBox" class="ai-output"></div></div>
-        </div>
-      </section>
-
-      <section id="reminders" class="page-section">
-        <div class="panel hero-panel">
-          <h2>PWA + Lock-Screen Notifications</h2>
-          <p>This turns your roadmap into an installable phone app and connects it with Firebase Cloud Messaging for lock-screen push notifications.</p>
-          <div class="button-row">
-            <button id="installAppBtn" class="secondary">Install App</button>
-            <button id="enableNotificationsBtn">Enable Browser Notifications</button>
-            <button id="enablePushBtn" class="secondary-ai">Enable Push Notifications</button>
-            <button id="sendTestLocalBtn" class="secondary">Test Lock-Screen Notification</button>
-          </div>
-          <p id="notificationStatus" class="message"></p>
-          <p id="pushStatus" class="message"></p>
-          <div class="private-note">
-            <strong>Important:</strong> for reminders while the app is closed, you must deploy the optional Firebase Functions folder or send a test notification from Firebase Console.
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-heading">
-            <h2>Routine Reminders</h2>
-            <button id="addDefaultRemindersBtn" class="secondary">Load Routine Reminders</button>
-          </div>
-          <div id="reminderList" class="reminder-list"></div>
-          <form id="addReminderForm" class="inline-form">
-            <input id="reminderTimeInput" type="time" required />
-            <input id="reminderTextInput" type="text" placeholder="Reminder message" required />
-            <button type="submit">Add Reminder</button>
-          </form>
-        </div>
-
-        <div class="panel">
-          <h2>FCM Device Token</h2>
-          <p class="muted">This token lets Firebase send notifications to this phone/browser. It is saved privately in Firestore for your admin account.</p>
-          <textarea id="fcmTokenBox" readonly placeholder="Your FCM token will appear here after enabling push notifications."></textarea>
-          <div class="button-row">
-            <button id="copyTokenBtn" class="secondary">Copy Token</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="rules" class="page-section">
-        <div class="panel"><h2>Discipline Rules</h2><p class="muted">These rules protect your focus until discipline becomes automatic.</p><div id="rulesList" class="rules-list"></div></div>
-      </section>
-
-      <section id="settings" class="page-section">
-        <div class="panel">
-          <h2>Routine Settings</h2>
-          <form id="settingsForm" class="settings-grid">
-            <label>Wake up time <input id="wakeTimeInput" type="time"></label>
-            <label>Sleep time <input id="sleepTimeInput" type="time"></label>
-            <label>Sport time <input id="sportTimeInput" type="time"></label>
-            <label>Class start <input id="classStartInput" type="time"></label>
-            <label>Class end <input id="classEndInput" type="time"></label>
-            <label>Main money goal <input id="moneyGoalInput" type="text"></label>
-            <button type="submit">Save Settings</button>
-          </form>
-          <p id="settingsStatus" class="message"></p>
-        </div>
-      </section>
-    </section>
+      <button id="fabBtn" class="fab" type="button"><i class="fa-solid fa-plus"></i></button>
+      <nav class="bottom-nav"><button class="nav active" data-screen="homeScreen" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button><button class="nav" data-screen="agendaScreen" type="button"><i class="fa-solid fa-calendar"></i><span>Agenda</span></button><button class="nav" data-screen="statsScreen" type="button"><i class="fa-solid fa-chart-simple"></i><span>Stats</span></button><button class="nav" data-screen="goalsScreen" type="button"><i class="fa-solid fa-bullseye"></i><span>Goals</span></button><button class="nav" data-screen="moreScreen" type="button"><i class="fa-solid fa-user"></i><span>More</span></button></nav>
+    </div>
   </main>
 
+  <div id="taskModal" class="modal"><form id="taskForm" class="task-modal"><div class="modal-head"><h3 id="taskModalTitle"><i class="fa-solid fa-plus"></i> Add Activity</h3><button id="closeModalBtn" class="close" type="button"><i class="fa-solid fa-xmark"></i></button></div><label>Task name<input id="taskTitleInput" type="text" placeholder="e.g. Research DiraIQ content" required></label><label>Time<input id="taskTimeInput" type="time" required></label><div class="choices" data-choice="category"><button class="choice active" type="button" data-value="Work"><i class="fa-solid fa-briefcase"></i> Work</button><button class="choice" type="button" data-value="Health"><i class="fa-solid fa-heart-pulse"></i> Health</button><button class="choice" type="button" data-value="Personal"><i class="fa-solid fa-utensils"></i> Personal</button><button class="choice" type="button" data-value="Learning"><i class="fa-solid fa-graduation-cap"></i> Learning</button></div><div class="choices" data-choice="priority"><button class="choice active" type="button" data-value="High"><i class="fa-solid fa-star"></i> High</button><button class="choice" type="button" data-value="Med">Med</button><button class="choice" type="button" data-value="Low">Low</button></div><button id="taskSubmitBtn" class="btn wide pink" type="submit">Save Activity</button><button id="cancelEditBtn" class="text-btn hidden" type="button">Cancel edit</button></form></div>
+
   <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="fcm-config.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>

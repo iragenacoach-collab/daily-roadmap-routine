@@ -1,21 +1,33 @@
-# My Daily Roadmap Routine - V7 PWA + FCM Pro
+# My Daily Roadmap Routine — V12 Final Merge Pro
 
-This version adds PWA install + Firebase Cloud Messaging push notifications.
+This is the full final merged version: premium mobile app UI + all previous working features.
 
-## What V7 adds
+## Included
 
-- PWA manifest
-- Phone install support
-- Firebase Messaging service worker
-- Lock-screen push notification support
-- FCM token generation and private Firestore saving
-- Test lock-screen notification button
-- Optional Firebase Functions scheduler for reminders while app is closed
-- Keeps all V6 features: channels, midnight reset, downloads, AI coach, archive, edit activities
+- Firebase Email/Password login
+- Admin-only access for `iragenacoach@gmail.com`
+- Firestore database saving
+- Mobile app UI inspired by premium booking/travel app layouts
+- Bottom navigation
+- Daily agenda and activities
+- Edit/delete activities
+- Automatic midnight reset to a fresh day
+- Browser notifications while app is open
+- Task notifications 5 minutes before and at exact time while app is open
+- Firebase Cloud Messaging token support
+- PWA install/app mode
+- AI Coach with Firebase AI Logic / Gemini fallback
+- Habit tracking and streak display
+- Goal/channel system: DiraIQ, 5 Highlight, GeoMystery
+- Daily achievement archive
+- Download today report
+- Download achievements as JSON/CSV
+- Settings
+- Discipline rules
 
 ## Upload to GitHub
 
-Upload/replace these root files:
+Extract the ZIP and upload/replace all root files:
 
 - index.html
 - style.css
@@ -31,46 +43,10 @@ Upload/replace these root files:
 - README.md
 - firestore.rules
 
-Do not upload only the zip. Extract first.
+## Important
 
-## Required Firebase step
+If your `fcm-config.js` already has your Firebase Web Push certificate public key, do not overwrite it, or paste the key again after uploading.
 
-1. Firebase Console
-2. Project settings
-3. Cloud Messaging
-4. Web Push certificates
-5. Generate key pair
-6. Copy the public key
-7. Paste it into `fcm-config.js`
+## Firebase Rules
 
-## Optional closed-app scheduled reminders
-
-To receive reminders at exact times when the app is closed, deploy the `functions` folder with Firebase CLI.
-
-Important: Cloud Functions require the Blaze plan.
-
-## iPhone
-
-For iPhone push, install the website to Home Screen first, then open the installed app and enable push notifications.
-
-
-## V8 Mobile Gradient Pro CSS Fix
-
-This update fixes:
-- Phone horizontal overflow
-- Activity cards cut off on mobile
-- Edit/Delete buttons too large and awkward
-- Sidebar/mobile nav layout
-- Adds cleaner linear-gradient styling
-- Better small-screen spacing
-
-
-## V9 Task Notifications
-
-Every activity in Today can now trigger notifications:
-- 5 minutes before the activity starts
-- At the exact activity time
-- Works while the PWA/browser is open
-- Optional Firebase Functions scheduler also sends task notifications when app is closed, if deployed on Blaze plan
-
-Use time format like 05:00, 18:00, 22:30 for notification detection.
+Paste `firestore.rules` into Firebase Console → Firestore → Rules → Publish.

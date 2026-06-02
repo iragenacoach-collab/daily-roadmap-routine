@@ -1,4 +1,3 @@
-/* Firebase Cloud Messaging service worker for PWA background notifications */
 importScripts("https://www.gstatic.com/firebasejs/12.5.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/12.5.0/firebase-messaging-compat.js");
 
@@ -19,10 +18,9 @@ messaging.onBackgroundMessage((payload) => {
     body: payload?.notification?.body || payload?.data?.body || "Protect your focus today.",
     icon: "./icon-192.png",
     badge: "./badge-72.png",
-    data: payload?.data || {},
-    requireInteraction: true
+    requireInteraction: true,
+    data: payload?.data || {}
   };
-
   self.registration.showNotification(title, options);
 });
 
