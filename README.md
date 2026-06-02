@@ -52,3 +52,14 @@ Important: Cloud Functions require the Blaze plan.
 ## iPhone
 
 For iPhone push, install the website to Home Screen first, then open the installed app and enable push notifications.
+
+
+## V8 Mobile Gradient Pro CSS Fix
+
+This update fixes:
+- Phone horizontal overflow
+- Activity cards cut off on mobile
+- Edit/Delete buttons too large and awkward
+- Sidebar/mobile nav layout
+- Adds cleaner linear-gradient styling
+- Better small-screen spacing
