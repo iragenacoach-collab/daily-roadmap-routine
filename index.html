@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Daily Roadmap Routine</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,26 +12,20 @@
     <div class="auth-card">
       <div class="brand-badge">DR</div>
       <h1>My Daily Roadmap</h1>
-      <p class="muted">Private discipline system for focus, routine, achievement, and YouTube growth.</p>
-
+      <p class="muted">Private discipline system for focus, daily achievements, reminders, and 3 YouTube channels.</p>
       <div class="tabs">
         <button class="tab active" id="loginTab">Login</button>
-        <button class="tab" id="signupTab">Create Admin Account</button>
+        <button class="tab" id="signupTab">Create Admin</button>
       </div>
-
       <form id="authForm">
-        <input id="nameInput" class="hidden" type="text" placeholder="Your name" autocomplete="name" />
-        <input id="emailInput" type="email" placeholder="Admin email" autocomplete="email" required />
-        <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" required />
+        <input id="nameInput" class="hidden" type="text" placeholder="Your name" />
+        <input id="emailInput" type="email" placeholder="Admin email" required />
+        <input id="passwordInput" type="password" placeholder="Password" required />
         <button type="submit" id="authSubmit">Login</button>
       </form>
-
       <button class="link-button" id="resetPasswordBtn">Forgot password?</button>
       <p id="authMessage" class="message"></p>
-
-      <div class="private-note">
-        <strong>Private app:</strong> only the admin email can access this roadmap.
-      </div>
+      <div class="private-note"><strong>Private:</strong> only your admin email can access this roadmap.</div>
     </div>
   </section>
 
@@ -39,13 +33,9 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="brand-badge small">DR</div>
-        <div>
-          <h2>My Roadmap</h2>
-          <p id="userRole">Admin Mode</p>
-        </div>
+        <div><h2>My Roadmap</h2><p>Admin Mode</p></div>
       </div>
-
-      <nav>
+      <nav class="side-nav">
         <button data-section="today" class="nav-btn active">Today</button>
         <button data-section="achievements" class="nav-btn">Archive</button>
         <button data-section="coach" class="nav-btn">Channels</button>
@@ -54,7 +44,6 @@
         <button data-section="rules" class="nav-btn">Rules</button>
         <button data-section="settings" class="nav-btn">Settings</button>
       </nav>
-
       <button class="logout" id="logoutBtn">Logout</button>
     </aside>
 
@@ -63,36 +52,32 @@
         <div>
           <p class="date" id="todayDate"></p>
           <h1 id="welcomeTitle">Welcome back</h1>
-          <p class="muted">Your day resets automatically at midnight. Finish the day before sleep.</p>
+          <p class="muted">At midnight, the app automatically opens a fresh day with default activities.</p>
         </div>
-        <div class="score-card">
-          <span id="completionScore">0%</span>
-          <small>today score</small>
-        </div>
+        <div class="score-card"><span id="completionScore">0%</span><small>today score</small></div>
       </header>
 
       <section id="today" class="page-section active-section">
         <div class="smart-grid">
-          <div class="mini-card"><strong id="todayDoneCount">0</strong><span>tasks done</span></div>
-          <div class="mini-card"><strong id="todayMissedCount">0</strong><span>tasks left</span></div>
+          <div class="mini-card"><strong id="todayDoneCount">0</strong><span>done</span></div>
+          <div class="mini-card"><strong id="todayMissedCount">0</strong><span>left</span></div>
           <div class="mini-card"><strong id="todayDayType">Class</strong><span>day mode</span></div>
           <div class="mini-card"><strong id="nextTaskText">—</strong><span>next focus</span></div>
         </div>
+
         <div class="grid two">
           <div class="panel hero-panel">
             <h2>Today Command Center</h2>
-            <p>Your routine is the system that protects your future. Complete the checklist, write your reflection, then finish the day.</p>
-
+            <p>Your routine is the system that protects your future. Complete the checklist, save reflection, then finish the day.</p>
             <div class="agenda-controls">
-              <label>
-                Day Type
+              <label>Day Type
                 <select id="dayType">
                   <option value="class">University / Class Day</option>
                   <option value="free">No Class / Deep Work Day</option>
                   <option value="custom">Custom Day</option>
                 </select>
               </label>
-              <button id="generateAgendaBtn">Generate Agenda</button>
+              <button id="generateAgendaBtn">Generate Default Agenda</button>
             </div>
           </div>
 
@@ -100,23 +85,14 @@
             <h2>Daily Reflection</h2>
             <textarea id="dailyComment" placeholder="What happened today? What did you learn? What must improve tomorrow?"></textarea>
             <div class="inline-small">
-              <label>
-                Mood
+              <label>Mood
                 <select id="moodInput">
-                  <option value="focused">Focused</option>
-                  <option value="normal">Normal</option>
-                  <option value="tired">Tired</option>
-                  <option value="distracted">Distracted</option>
-                  <option value="strong">Strong</option>
+                  <option value="focused">Focused</option><option value="normal">Normal</option>
+                  <option value="tired">Tired</option><option value="distracted">Distracted</option><option value="strong">Strong</option>
                 </select>
               </label>
-              <label>
-                Energy
-                <select id="energyInput">
-                  <option value="high">High</option>
-                  <option value="medium">Medium</option>
-                  <option value="low">Low</option>
-                </select>
+              <label>Energy
+                <select id="energyInput"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
               </label>
             </div>
             <button id="saveCommentBtn">Save Reflection</button>
@@ -127,7 +103,10 @@
         <div class="panel">
           <div class="panel-heading">
             <h2>Today's Activities</h2>
-            <div class="button-row compact"><button id="downloadTodayBtn" class="secondary">Download Today</button><button id="resetTodayBtn" class="secondary danger-soft">Reset Today</button></div>
+            <div class="button-row compact">
+              <button id="downloadTodayBtn" class="secondary">Download Today</button>
+              <button id="resetTodayBtn" class="secondary danger-soft">Reset To Default</button>
+            </div>
           </div>
           <div id="taskList" class="task-list"></div>
         </div>
@@ -155,115 +134,60 @@
       </section>
 
       <section id="achievements" class="page-section">
-        <div class="grid four">
-          <div class="mini-card">
-            <strong id="totalDays">0</strong>
-            <span>saved days</span>
-          </div>
-          <div class="mini-card">
-            <strong id="currentStreak">0</strong>
-            <span>day streak</span>
-          </div>
-          <div class="mini-card">
-            <strong id="averageScore">0%</strong>
-            <span>average score</span>
-          </div>
-          <div class="mini-card">
-            <strong id="bestScore">0%</strong>
-            <span>best score</span>
-          </div>
+        <div class="smart-grid">
+          <div class="mini-card"><strong id="totalDays">0</strong><span>saved days</span></div>
+          <div class="mini-card"><strong id="currentStreak">0</strong><span>day streak</span></div>
+          <div class="mini-card"><strong id="averageScore">0%</strong><span>average score</span></div>
+          <div class="mini-card"><strong id="bestScore">0%</strong><span>best score</span></div>
         </div>
-
         <div class="panel">
-          <div class="panel-heading"><h2>Daily Achievement Archive</h2><div class="button-row compact"><button id="downloadAllCSVBtn" class="secondary">Download CSV</button><button id="downloadAllJSONBtn" class="secondary">Download JSON</button></div></div>
+          <div class="panel-heading">
+            <h2>Daily Achievement Archive</h2>
+            <div class="button-row compact">
+              <button id="downloadAllCSVBtn" class="secondary">Download CSV</button>
+              <button id="downloadAllJSONBtn" class="secondary">Download JSON</button>
+            </div>
+          </div>
           <div id="achievementList" class="history-list"></div>
         </div>
       </section>
 
       <section id="coach" class="page-section">
-        <div class="panel hero-panel">
-          <h2>Channel Growth Coach</h2>
-          <p>Channels grow because of repeated research, scripting, visuals, editing, uploading, and learning from competitors.</p>
-        </div>
-
+        <div class="panel hero-panel"><h2>Channel Growth Coach</h2><p>Three channels. Three missions. Daily execution is the only path.</p></div>
         <div class="panel">
           <h2>Today's YouTube Execution</h2>
           <div class="coach-grid">
             <label><input type="checkbox" class="coach-check" data-key="research"> Researched content ideas</label>
             <label><input type="checkbox" class="coach-check" data-key="script"> Wrote or improved script</label>
-            <label><input type="checkbox" class="coach-check" data-key="visuals"> Created visual prompts / clips plan</label>
+            <label><input type="checkbox" class="coach-check" data-key="visuals"> Created visual prompts / clip plan</label>
             <label><input type="checkbox" class="coach-check" data-key="edit"> Edited video or prepared assets</label>
             <label><input type="checkbox" class="coach-check" data-key="upload"> Uploaded / scheduled content</label>
             <label><input type="checkbox" class="coach-check" data-key="competitors"> Studied competitors</label>
           </div>
-
           <textarea id="videoIdeaInput" placeholder="Tomorrow's video idea / channel focus..."></textarea>
           <button id="saveCoachBtn">Save Channel Progress</button>
           <div id="channelMotivationBox" class="advice-box"></div>
         </div>
-
-        <div class="panel">
-          <h2>My 3 Channel Niches</h2>
-          <div id="channelFocusList" class="channel-list"></div>
-        </div>
+        <div class="panel"><h2>My 3 Channel Niches</h2><div id="channelFocusList" class="channel-list"></div></div>
       </section>
 
-
       <section id="aiCoach" class="page-section">
-        <div class="panel hero-panel">
-          <h2>Gemini AI Discipline Coach</h2>
-          <p>This coach analyzes your daily checklist, missed tasks, mood, energy, reflection, channel progress, and achievement history. It gives you direct advice for discipline, YouTube growth, and tomorrow’s plan.</p>
-          <p class="muted">If AI is not enabled yet, this page will still show rule-based advice and explain what to activate in Firebase.</p>
-        </div>
-
+        <div class="panel hero-panel"><h2>Gemini AI Discipline Coach</h2><p>Analyzes daily checklist, missed tasks, mood, energy, reflection, channel progress, and saved achievements.</p></div>
         <div class="grid two">
-          <div class="panel">
-            <h2>AI Daily Review</h2>
-            <p class="muted">Use this after or before finishing your day.</p>
-            <button id="aiDailyReviewBtn">Generate AI Daily Review</button>
-            <div id="aiDailyReviewBox" class="ai-output"></div>
-          </div>
-
-          <div class="panel">
-            <h2>AI Tomorrow Plan</h2>
-            <p class="muted">Get a focused plan for tomorrow based on your weak points today.</p>
-            <button id="aiTomorrowPlanBtn">Generate Tomorrow Plan</button>
-            <div id="aiTomorrowPlanBox" class="ai-output"></div>
-          </div>
+          <div class="panel"><h2>AI Daily Review</h2><p class="muted">Use this after or before finishing your day.</p><button id="aiDailyReviewBtn">Generate AI Daily Review</button><div id="aiDailyReviewBox" class="ai-output"></div></div>
+          <div class="panel"><h2>AI Tomorrow Plan</h2><p class="muted">Get a focused plan for tomorrow.</p><button id="aiTomorrowPlanBtn">Generate Tomorrow Plan</button><div id="aiTomorrowPlanBox" class="ai-output"></div></div>
         </div>
-
         <div class="grid two">
-          <div class="panel">
-            <h2>AI Channel Motivation</h2>
-            <p class="muted">Specific next actions for DiraIQ, 5 Highlight, and Geography/Mysteries.</p>
-            <button id="aiChannelCoachBtn">Generate Channel Coaching</button>
-            <div id="aiChannelCoachBox" class="ai-output"></div>
-          </div>
-
-          <div class="panel">
-            <h2>AI Weekly Discipline Review</h2>
-            <p class="muted">Looks at saved achievements and gives you pattern-based advice.</p>
-            <button id="aiWeeklyReviewBtn">Generate Weekly Review</button>
-            <div id="aiWeeklyReviewBox" class="ai-output"></div>
-          </div>
+          <div class="panel"><h2>AI Channel Motivation</h2><p class="muted">Specific next actions for DiraIQ, 5 Highlight, and GeoMystery.</p><button id="aiChannelCoachBtn">Generate Channel Coaching</button><div id="aiChannelCoachBox" class="ai-output"></div></div>
+          <div class="panel"><h2>AI Weekly Review</h2><p class="muted">Uses saved achievements to identify patterns.</p><button id="aiWeeklyReviewBtn">Generate Weekly Review</button><div id="aiWeeklyReviewBox" class="ai-output"></div></div>
         </div>
       </section>
 
       <section id="reminders" class="page-section">
-        <div class="panel hero-panel">
-          <h2>Reminder Center</h2>
-          <p>These reminders work while the website is open. The app also creates a new day automatically after midnight.</p>
-          <button id="enableNotificationsBtn">Enable Browser Notifications</button>
-          <p id="notificationStatus" class="message"></p>
-        </div>
-
+        <div class="panel hero-panel"><h2>Reminder Center</h2><p>Works while the website is open. Midnight reset works automatically when the date changes.</p><button id="enableNotificationsBtn">Enable Browser Notifications</button><p id="notificationStatus" class="message"></p></div>
         <div class="panel">
-          <div class="panel-heading">
-            <h2>Routine Reminders</h2>
-            <button id="addDefaultRemindersBtn" class="secondary">Load Routine Reminders</button>
-          </div>
+          <div class="panel-heading"><h2>Routine Reminders</h2><button id="addDefaultRemindersBtn" class="secondary">Load Routine Reminders</button></div>
           <div id="reminderList" class="reminder-list"></div>
-
           <form id="addReminderForm" class="inline-form">
             <input id="reminderTimeInput" type="time" required />
             <input id="reminderTextInput" type="text" placeholder="Reminder message" required />
@@ -273,11 +197,7 @@
       </section>
 
       <section id="rules" class="page-section">
-        <div class="panel">
-          <h2>Discipline Rules</h2>
-          <p class="muted">These are not punishment. They protect your focus until discipline becomes part of your blood.</p>
-          <div id="rulesList" class="rules-list"></div>
-        </div>
+        <div class="panel"><h2>Discipline Rules</h2><p class="muted">These rules protect your focus until discipline becomes automatic.</p><div id="rulesList" class="rules-list"></div></div>
       </section>
 
       <section id="settings" class="page-section">
