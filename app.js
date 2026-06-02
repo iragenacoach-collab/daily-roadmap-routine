@@ -31,7 +31,7 @@ const db = getFirestore(app);
 let aiModel = null;
 try {
   const ai = getAI(app, { backend: new GoogleAIBackend() });
-  aiModel = getGenerativeModel(ai, { model: "gemini-3.5-flash" });
+  aiModel = getGenerativeModel(ai, { model: "gemini-2.5-flash" });
 } catch (error) {
   console.warn("AI Logic not ready:", error);
 }
@@ -41,6 +41,8 @@ let currentUser = null;
 let currentDayData = null;
 let settings = null;
 let achievements = [];
+let currentDateKey = localDateKey();
+let editingTaskIndex = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -117,7 +119,13 @@ const classEndInput = $("classEndInput");
 const moneyGoalInput = $("moneyGoalInput");
 const settingsStatus = $("settingsStatus");
 
-const todayKey = () => new Date().toISOString().split("T")[0];
+function localDateKey(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+const todayKey = () => localDateKey();
 
 const defaultSettings = {
   wakeTime: "05:00",
@@ -127,9 +135,9 @@ const defaultSettings = {
   classEnd: "17:00",
   moneyGoal: "$100K from YouTube and online skills in 3 years",
   channels: [
-    { name: "Channel 1", focus: "Global AI tools and beginner digital skills" },
-    { name: "Channel 2", focus: "Money mindset, discipline, and practical growth" },
-    { name: "Channel 3", focus: "Content systems, productivity, and online income learning" }
+    { name: "DiraIQ", focus: "Truth behind surroundings. Teach what the world will not teach you: reality, discipline, money, AI, future skills, and deep life lessons." },
+    { name: "5 Highlight", focus: "Five-minute football highlights. Clean, exciting, globally understandable football recap content." },
+    { name: "GeoMystery", focus: "Geography and mysteries. Countries, strange places, maps, unknown world stories, history, and hidden facts." }
   ],
   rules: [
     { title: "Avoid dating for 3 years", text: "Protect your focus. No chasing relationships while building your future." },
@@ -242,6 +250,7 @@ onAuthStateChanged(auth, async (user) => {
   await loadAllData();
   renderAll();
   startReminderLoop();
+  startMidnightResetWatcher();
 });
 
 async function ensureUserDoc(user) {
@@ -270,7 +279,8 @@ async function loadAllData() {
   const userSnap = await getDoc(userRef);
   settings = userSnap.data().settings || defaultSettings;
 
-  const dayRef = doc(db, "users", currentUser.uid, "days", todayKey());
+  currentDateKey = localDateKey();
+  const dayRef = doc(db, "users", currentUser.uid, "days", currentDateKey);
   const daySnap = await getDoc(dayRef);
 
   if (!daySnap.exists()) {
@@ -288,7 +298,7 @@ async function loadAllData() {
 
 function createDayData(type) {
   return {
-    date: todayKey(),
+    date: currentDateKey,
     dayType: type,
     tasks: buildTasks(type),
     comment: "",
@@ -304,7 +314,7 @@ function createDayData(type) {
 
 async function saveDayData() {
   currentDayData.updatedAt = new Date().toISOString();
-  await setDoc(doc(db, "users", currentUser.uid, "days", todayKey()), currentDayData, { merge: true });
+  await setDoc(doc(db, "users", currentUser.uid, "days", currentDateKey), currentDayData, { merge: true });
 }
 
 function buildTasks(type) {
@@ -362,13 +372,13 @@ function t(time, title) {
 
 function buildDefaultReminders() {
   return [
-    { time: settings.wakeTime || "05:00", text: "Wake up. Your future needs discipline today.", enabled: true, firedToday: false },
-    { time: "05:05", text: "Prayer time. Ask for strength, then work.", enabled: true, firedToday: false },
-    { time: "05:45", text: "Research content ideas for your channels.", enabled: true, firedToday: false },
-    { time: settings.sportTime || "06:30", text: "Sport time. Push-ups and body activation.", enabled: true, firedToday: false },
-    { time: "18:00", text: "Editing and content production block.", enabled: true, firedToday: false },
-    { time: "22:30", text: "Review the day and finish your achievement.", enabled: true, firedToday: false },
-    { time: settings.sleepTime || "23:00", text: "Sleep. Protect tomorrow.", enabled: true, firedToday: false }
+    { time: settings.wakeTime || "05:00", text: "Wake up. Your future needs discipline today.", enabled: true, firedDate: "" },
+    { time: "05:05", text: "Prayer time. Ask for strength, then work.", enabled: true, firedDate: "" },
+    { time: "05:45", text: "Research content ideas for your channels.", enabled: true, firedDate: "" },
+    { time: settings.sportTime || "06:30", text: "Sport time. Push-ups and body activation.", enabled: true, firedDate: "" },
+    { time: "18:00", text: "Editing and content production block.", enabled: true, firedDate: "" },
+    { time: "22:30", text: "Review the day and finish your achievement.", enabled: true, firedDate: "" },
+    { time: settings.sleepTime || "23:00", text: "Sleep. Protect tomorrow.", enabled: true, firedDate: "" }
   ];
 }
 
@@ -399,6 +409,7 @@ function renderTasks() {
       <input class="check" type="checkbox" ${task.done ? "checked" : ""}>
       <div class="task-time">${escapeHTML(task.time || "--")}</div>
       <div class="task-title">${escapeHTML(task.title)}</div>
+      <button class="edit-task">Edit</button>
       <button class="delete-task">Delete</button>
     `;
 
@@ -406,6 +417,15 @@ function renderTasks() {
       currentDayData.tasks[index].done = e.target.checked;
       await saveDayData();
       renderTasks();
+    });
+
+    div.querySelector(".edit-task").addEventListener("click", () => {
+      editingTaskIndex = index;
+      newTaskTime.value = task.time || "";
+      newTaskTitle.value = task.title || "";
+      if (taskSubmitBtn) taskSubmitBtn.textContent = "Save Edit";
+      if (cancelEditTaskBtn) cancelEditTaskBtn.classList.remove("hidden");
+      newTaskTitle.focus();
     });
 
     div.querySelector(".delete-task").addEventListener("click", async () => {
@@ -439,16 +459,32 @@ generateAgendaBtn.addEventListener("click", async () => {
 
 addTaskForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  currentDayData.tasks.push({
+  const task = {
     time: newTaskTime.value.trim() || "--",
     title: newTaskTitle.value.trim(),
-    done: false
-  });
-  newTaskTime.value = "";
-  newTaskTitle.value = "";
+    done: editingTaskIndex !== null ? currentDayData.tasks[editingTaskIndex].done : false
+  };
+
+  if (editingTaskIndex !== null) {
+    currentDayData.tasks[editingTaskIndex] = task;
+  } else {
+    currentDayData.tasks.push(task);
+  }
+
+  resetTaskForm();
   await saveDayData();
   renderTasks();
 });
+
+if (cancelEditTaskBtn) cancelEditTaskBtn.addEventListener("click", resetTaskForm);
+
+function resetTaskForm() {
+  editingTaskIndex = null;
+  newTaskTime.value = "";
+  newTaskTitle.value = "";
+  if (taskSubmitBtn) taskSubmitBtn.textContent = "Add Activity";
+  if (cancelEditTaskBtn) cancelEditTaskBtn.classList.add("hidden");
+}
 
 saveCommentBtn.addEventListener("click", async () => {
   currentDayData.comment = dailyComment.value.trim();
@@ -474,7 +510,7 @@ finishDayBtn.addEventListener("click", async () => {
   currentDayData.finished = true;
 
   const achievement = buildAchievement();
-  await setDoc(doc(db, "users", currentUser.uid, "achievements", todayKey()), achievement, { merge: true });
+  await setDoc(doc(db, "users", currentUser.uid, "achievements", currentDateKey), achievement, { merge: true });
   await saveDayData();
   await loadAchievements();
 
@@ -488,7 +524,7 @@ function buildAchievement() {
   const completed = currentDayData.tasks.filter(t => t.done);
   const missed = currentDayData.tasks.filter(t => !t.done);
   return {
-    date: todayKey(),
+    date: currentDateKey,
     score: getScore(),
     completedCount: completed.length,
     missedCount: missed.length,
@@ -561,7 +597,9 @@ function renderAchievements() {
       <p><strong>Comment:</strong> ${escapeHTML(item.comment || "No comment saved.")}</p>
       <p><strong>Advice:</strong> ${escapeHTML(item.advice || "")}</p>
       <p><strong>Tomorrow focus:</strong> ${escapeHTML(item.tomorrowFocus || "")}</p>
+      <div class="card-actions"><button class="download-card-btn">Download Report</button></div>
     `;
+    div.querySelector(".download-card-btn").addEventListener("click", () => downloadText(`achievement-${item.date}.txt`, buildAchievementReportText(item)));
     achievementList.appendChild(div);
   });
 }
@@ -685,7 +723,7 @@ async function generateAIIntoBox(type, box) {
   try {
     if (!aiModel) throw new Error("Firebase AI Logic model is not initialized.");
 
-    const result = await aiModel.generateContent(prompt);
+    const result = await withTimeout(aiModel.generateContent(prompt), 25000);
     const text = result?.response?.text?.() || "No AI response received.";
 
     box.className = "ai-output";
@@ -701,6 +739,10 @@ async function generateAIIntoBox(type, box) {
       "To activate real Gemini AI: Firebase Console → AI Services → AI Logic → Get started → choose Gemini Developer API → finish setup. Also enable App Check later for protection.\n\n" +
       "Technical error: " + cleanFirebaseError(error.message || String(error));
   }
+}
+
+function withTimeout(promise, ms) {
+  return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("AI request timed out after 25 seconds.")), ms))]);
 }
 
 function buildAIPrompt(type) {
@@ -721,7 +763,10 @@ function buildAIPrompt(type) {
 You are a strict but constructive personal discipline coach for Iragena.
 Context:
 - Main mission: ${settings.moneyGoal}
-- Build three global YouTube channels.
+- DiraIQ: Truth behind surroundings. Teach what the world will not teach you.
+- 5 Highlight: five-minute football highlights.
+- GeoMystery: geography and mysteries.
+- Build three global YouTube channels: DiraIQ, 5 Highlight, and GeoMystery.
 - Daily rules: avoid dating for 3 years, avoid useless status/memes, avoid too much talking/groups, live privately, control emotions, focus on YouTube until $100K in 3 years.
 - Today's score: ${score}%
 - Mood: ${currentDayData.mood}
@@ -757,7 +802,7 @@ Create tomorrow's plan:
 Give channel growth coaching:
 1. What I did well for YouTube today.
 2. What I avoided or missed.
-3. What each of the 3 channels should focus on tomorrow.
+3. What DiraIQ, 5 Highlight, and GeoMystery should focus on tomorrow.
 4. A strong motivation paragraph.
 `;
   }
@@ -796,7 +841,7 @@ function buildAIFallback(type) {
   }
 
   if (type === "channel") {
-    return "Your channels will grow from boring repetition: research, script, visual plan, edit, upload, study analytics, repeat. Do not wait to feel ready.";
+    return "DiraIQ needs one truth-based idea. 5 Highlight needs one football clip plan. GeoMystery needs one mystery/geography topic. Do not wait to feel ready.";
   }
 
   if (type === "weekly") {
@@ -807,10 +852,10 @@ function buildAIFallback(type) {
 }
 
 async function saveAIResponse(type, text) {
-  const ref = doc(db, "users", currentUser.uid, "aiResponses", `${todayKey()}-${type}`);
+  const ref = doc(db, "users", currentUser.uid, "aiResponses", `${currentDateKey}-${type}`);
   await setDoc(ref, {
     type,
-    date: todayKey(),
+    date: currentDateKey,
     text,
     score: getScore(),
     createdAt: new Date().toISOString()
@@ -841,7 +886,7 @@ addReminderForm.addEventListener("submit", async (e) => {
     time: reminderTimeInput.value,
     text: reminderTextInput.value.trim(),
     enabled: true,
-    firedToday: false
+    firedDate: ""
   });
   reminderTimeInput.value = "";
   reminderTextInput.value = "";
@@ -896,9 +941,9 @@ function startReminderLoop() {
     let changed = false;
 
     for (const reminder of currentDayData.reminders) {
-      if (reminder.enabled && !reminder.firedToday && reminder.time === currentTime) {
+      if (reminder.enabled && reminder.firedDate !== localDateKey() && reminder.time === currentTime) {
         showReminder(reminder.text);
-        reminder.firedToday = true;
+        reminder.firedDate = localDateKey();
         changed = true;
       }
     }
@@ -908,6 +953,20 @@ function startReminderLoop() {
       renderReminders();
     }
   }, 30000);
+}
+
+let midnightInterval = null;
+function startMidnightResetWatcher() {
+  if (midnightInterval) clearInterval(midnightInterval);
+  midnightInterval = setInterval(async () => {
+    const key = localDateKey();
+    if (key !== currentDateKey) {
+      currentDateKey = key;
+      await loadAllData();
+      renderAll();
+      showReminder("New day created. Your roadmap has reset for today.");
+    }
+  }, 60000);
 }
 
 function showReminder(text) {
@@ -956,6 +1015,40 @@ function showSection(sectionId) {
   document.querySelectorAll(".page-section").forEach(section => section.classList.toggle("active-section", section.id === sectionId));
 
   if (sectionId === "achievements") renderAchievements();
+}
+
+
+if (downloadTodayBtn) downloadTodayBtn.addEventListener("click", () => downloadText(`daily-roadmap-${currentDateKey}.txt`, buildDayReportText(currentDayData)));
+
+if (downloadAllCSVBtn) downloadAllCSVBtn.addEventListener("click", () => {
+  const rows = [["date", "score", "completed", "missed", "mood", "energy", "tomorrow_focus"]];
+  achievements.forEach(a => rows.push([a.date, a.score, a.completedCount || 0, a.missedCount || 0, a.mood || "", a.energy || "", a.tomorrowFocus || ""]));
+  const csv = rows.map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(",")).join("\n");
+  downloadText("daily-roadmap-achievements.csv", csv);
+});
+
+if (downloadAllJSONBtn) downloadAllJSONBtn.addEventListener("click", () => downloadText("daily-roadmap-achievements.json", JSON.stringify(achievements, null, 2)));
+
+function buildDayReportText(day) {
+  const completed = day.tasks.filter(t => t.done).map(t => `✓ ${t.time} - ${t.title}`).join("\n");
+  const missed = day.tasks.filter(t => !t.done).map(t => `✗ ${t.time} - ${t.title}`).join("\n");
+  return `MY DAILY ROADMAP REPORT\nDate: ${currentDateKey}\nScore: ${getScore()}%\nMood: ${day.mood || ""}\nEnergy: ${day.energy || ""}\n\nCOMPLETED\n${completed || "None"}\n\nMISSED\n${missed || "None"}\n\nREFLECTION\n${day.comment || ""}\n\nTOMORROW FOCUS\n${day.tomorrowFocus || ""}\n`;
+}
+
+function buildAchievementReportText(item) {
+  return `MY DAILY ACHIEVEMENT\nDate: ${item.date}\nScore: ${item.score}%\nCompleted: ${item.completedCount || 0}\nMissed: ${item.missedCount || 0}\nMood: ${item.mood || ""}\nEnergy: ${item.energy || ""}\n\nCOMMENT\n${item.comment || ""}\n\nADVICE\n${item.advice || ""}\n\nTOMORROW FOCUS\n${item.tomorrowFocus || ""}\n`;
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 function cleanFirebaseError(message) {

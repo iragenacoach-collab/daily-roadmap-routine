@@ -594,3 +594,45 @@ nav {
     display: grid;
   }
 }
+
+
+/* V5 SMART PRO FIXES */
+nav { scrollbar-width: thin; }
+.smart-grid { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:20px; margin-bottom:20px; }
+.button-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.button-row.compact { margin-top:0; }
+.button-row button, .secondary-ai { width:auto; text-align:center; }
+.danger-soft { background: rgba(255,107,107,0.14) !important; color:#ffb3b3 !important; }
+.edit-task, .download-card-btn { background: rgba(255,255,255,0.08); color: var(--text); padding:9px 12px; border-radius:10px; font-weight:800; }
+.card-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.task { grid-template-columns: auto 80px 1fr auto auto; }
+.ai-output, .advice-box { white-space: pre-wrap; }
+#aiDailyReviewBtn, #aiTomorrowPlanBtn, #aiChannelCoachBtn, #aiWeeklyReviewBtn, #saveCoachBtn { padding:14px 18px; border-radius:14px; font-weight:900; background: var(--gold); color:#07111f; }
+
+@media (max-width: 980px) {
+  .dashboard { display:block; }
+  .sidebar { width:100%; height:auto; position: sticky; top:0; z-index:99; padding:14px; border-right:0; border-bottom:1px solid var(--line); }
+  .sidebar-header { margin-bottom:12px; }
+  nav { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+  .nav-btn { width:auto; min-width:max-content; white-space:nowrap; padding:11px 14px; }
+  .logout { position:static; width:auto; margin-top:10px; padding:11px 14px; }
+  .content { padding:18px; padding-bottom:40px; }
+  .grid.two, .grid.four, .smart-grid, .coach-grid, .settings-grid { grid-template-columns:1fr; }
+  .topbar { flex-direction:column; align-items:stretch; }
+  .score-card { width:100%; }
+  .task, .reminder-row { grid-template-columns:auto 68px 1fr; align-items:start; }
+  .edit-task, .delete-task, .delete-reminder { grid-column:1 / -1; }
+}
+
+@media (max-width: 560px) {
+  body { background:#07111f; }
+  .content { padding:14px; padding-bottom:32px; }
+  .panel, .mini-card { padding:16px; border-radius:18px; }
+  .panel h2 { font-size:21px; }
+  .topbar h1 { font-size:28px; }
+  .inline-small, .inline-form { display:grid; grid-template-columns:1fr; }
+  .button-row { display:grid; }
+  .button-row button { width:100%; }
+  input, textarea, select, button { min-height:46px; }
+  .task-title { font-size:15px; line-height:1.45; }
+}

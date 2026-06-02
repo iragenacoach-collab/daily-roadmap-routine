@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Daily Roadmap Routine</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -47,11 +47,11 @@
 
       <nav>
         <button data-section="today" class="nav-btn active">Today</button>
-        <button data-section="achievements" class="nav-btn">Achievements</button>
-        <button data-section="coach" class="nav-btn">Channel Growth</button>
+        <button data-section="achievements" class="nav-btn">Archive</button>
+        <button data-section="coach" class="nav-btn">Channels</button>
         <button data-section="aiCoach" class="nav-btn">AI Coach</button>
         <button data-section="reminders" class="nav-btn">Reminders</button>
-        <button data-section="rules" class="nav-btn">Discipline Rules</button>
+        <button data-section="rules" class="nav-btn">Rules</button>
         <button data-section="settings" class="nav-btn">Settings</button>
       </nav>
 
@@ -63,7 +63,7 @@
         <div>
           <p class="date" id="todayDate"></p>
           <h1 id="welcomeTitle">Welcome back</h1>
-          <p class="muted">Your job is not to feel ready. Your job is to execute today.</p>
+          <p class="muted">Your day resets automatically at midnight. Finish the day before sleep.</p>
         </div>
         <div class="score-card">
           <span id="completionScore">0%</span>
@@ -72,9 +72,15 @@
       </header>
 
       <section id="today" class="page-section active-section">
+        <div class="smart-grid">
+          <div class="mini-card"><strong id="todayDoneCount">0</strong><span>tasks done</span></div>
+          <div class="mini-card"><strong id="todayMissedCount">0</strong><span>tasks left</span></div>
+          <div class="mini-card"><strong id="todayDayType">Class</strong><span>day mode</span></div>
+          <div class="mini-card"><strong id="nextTaskText">—</strong><span>next focus</span></div>
+        </div>
         <div class="grid two">
           <div class="panel hero-panel">
-            <h2>Today's Mission</h2>
+            <h2>Today Command Center</h2>
             <p>Your routine is the system that protects your future. Complete the checklist, write your reflection, then finish the day.</p>
 
             <div class="agenda-controls">
@@ -120,18 +126,19 @@
 
         <div class="panel">
           <div class="panel-heading">
-            <h2>Today's Checklist</h2>
-            <button id="resetTodayBtn" class="secondary">Reset Today</button>
+            <h2>Today's Activities</h2>
+            <div class="button-row compact"><button id="downloadTodayBtn" class="secondary">Download Today</button><button id="resetTodayBtn" class="secondary danger-soft">Reset Today</button></div>
           </div>
           <div id="taskList" class="task-list"></div>
         </div>
 
         <div class="panel">
-          <h2>Add Important Task</h2>
+          <h2>Add / Edit Activity</h2>
           <form id="addTaskForm" class="inline-form">
             <input id="newTaskTime" type="text" placeholder="Time e.g. 14:00" />
-            <input id="newTaskTitle" type="text" placeholder="Task title" required />
-            <button type="submit">Add Task</button>
+            <input id="newTaskTitle" type="text" placeholder="Activity title" required />
+            <button type="submit" id="taskSubmitBtn">Add Activity</button>
+            <button type="button" id="cancelEditTaskBtn" class="secondary hidden">Cancel Edit</button>
           </form>
         </div>
 
@@ -168,7 +175,7 @@
         </div>
 
         <div class="panel">
-          <h2>Achievement History</h2>
+          <div class="panel-heading"><h2>Daily Achievement Archive</h2><div class="button-row compact"><button id="downloadAllCSVBtn" class="secondary">Download CSV</button><button id="downloadAllJSONBtn" class="secondary">Download JSON</button></div></div>
           <div id="achievementList" class="history-list"></div>
         </div>
       </section>
@@ -196,7 +203,7 @@
         </div>
 
         <div class="panel">
-          <h2>3 Channel Focus</h2>
+          <h2>My 3 Channel Niches</h2>
           <div id="channelFocusList" class="channel-list"></div>
         </div>
       </section>
@@ -205,7 +212,7 @@
       <section id="aiCoach" class="page-section">
         <div class="panel hero-panel">
           <h2>Gemini AI Discipline Coach</h2>
-          <p>This coach analyzes your daily checklist, missed tasks, mood, energy, reflection, and channel progress. It gives you direct advice for discipline, YouTube growth, and tomorrow’s plan.</p>
+          <p>This coach analyzes your daily checklist, missed tasks, mood, energy, reflection, channel progress, and achievement history. It gives you direct advice for discipline, YouTube growth, and tomorrow’s plan.</p>
           <p class="muted">If AI is not enabled yet, this page will still show rule-based advice and explain what to activate in Firebase.</p>
         </div>
 
@@ -228,7 +235,7 @@
         <div class="grid two">
           <div class="panel">
             <h2>AI Channel Motivation</h2>
-            <p class="muted">Specific motivation and next actions for your three global YouTube channels.</p>
+            <p class="muted">Specific next actions for DiraIQ, 5 Highlight, and Geography/Mysteries.</p>
             <button id="aiChannelCoachBtn">Generate Channel Coaching</button>
             <div id="aiChannelCoachBox" class="ai-output"></div>
           </div>
@@ -245,7 +252,7 @@
       <section id="reminders" class="page-section">
         <div class="panel hero-panel">
           <h2>Reminder Center</h2>
-          <p>These reminders work while the website is open in the browser. For phone push notifications when closed, we can later add Firebase Cloud Messaging.</p>
+          <p>These reminders work while the website is open. The app also creates a new day automatically after midnight.</p>
           <button id="enableNotificationsBtn">Enable Browser Notifications</button>
           <p id="notificationStatus" class="message"></p>
         </div>
