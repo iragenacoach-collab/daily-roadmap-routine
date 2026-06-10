@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- V12 FINAL MERGE PRO: Firebase login, Firestore, PWA, FCM, AI coach, routine, agenda, habits, goals, channels, achievements, downloads, midnight reset. -->
+  <!-- V13 ADDITIVE UPGRADE: Keeps the complete V12 UI, colors, navigation and integrations; adds flexible agendas, Big 3, focus, study, creator-business, income tracking and guided AI chat. -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#ff6f91" />
@@ -14,6 +14,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
+  <!-- Optional secure AI endpoint. Put a Firebase/Cloud Function URL in content; never expose an AI API key here. -->
+  <meta name="daily-roadmap-ai-endpoint" content="" />
+  <style id="v13AdditiveStyles">
+    /* Layout-only additions. Existing style.css remains the source of all colors and visual identity. */
+    .v13-stack{display:grid;gap:12px}
+    .v13-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .v13-grow{flex:1;min-width:160px}
+    .v13-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .v13-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .v13-timer{text-align:center;font-size:2.6rem;font-weight:900;letter-spacing:2px;margin:8px 0}
+    .v13-scroll{max-height:340px;overflow:auto;display:grid;gap:10px}
+    .v13-chat-message{white-space:pre-wrap;overflow-wrap:anywhere}
+    .v13-checkline{display:flex;gap:10px;align-items:center}
+    .v13-checkline input[type="text"]{flex:1}
+    .v13-compact{margin:0}
+    .v13-center{text-align:center}
+    .v13-divider{margin:14px 0}
+    .v13-metric b{display:block;font-size:1.25rem}
+    @media(max-width:560px){.v13-grid,.v13-grid.three{grid-template-columns:1fr}.v13-timer{font-size:2.2rem}}
+  </style>
 </head>
 <body>
   <section id="authScreen" class="auth-screen">
@@ -41,6 +61,43 @@
           <header class="app-head grad-home"><div class="head-top"><div class="user"><div class="avatar"><i class="fa-solid fa-sun"></i></div><div><span id="dateText">Today</span><h2 id="welcomeTitle">Welcome</h2></div></div><button class="icon bell-dot" type="button"><i class="fa-solid fa-bell"></i></button></div><h1>Build today with discipline.</h1><p>Your day resets automatically at midnight. Start fresh and execute.</p></header>
           <div class="content">
             <section class="card focus-card float-card"><div id="scoreCircle" class="circle" style="--progress:0"><span id="completionScore">0%</span></div><div><h3>Today's execution</h3><p><b id="doneCount">0</b> done • <b id="leftCount">0</b> left</p><small id="nextTaskLine">Next focus: —</small></div></section>
+
+            <!-- V13 additive features: Home. Existing V12 blocks remain unchanged. -->
+            <section class="card" id="big3Card">
+              <div class="section-title tight"><h3><i class="fa-solid fa-crown"></i> Today Must Win — Big 3</h3><button id="saveBig3Btn" class="chip-btn" type="button">Save</button></div>
+              <p class="mini">Choose only three outcomes that make today successful.</p>
+              <div class="v13-stack">
+                <label class="v13-checkline"><input id="big3StudyDone" type="checkbox"><input id="big3StudyInput" type="text" placeholder="University / learning priority"></label>
+                <label class="v13-checkline"><input id="big3BusinessDone" type="checkbox"><input id="big3BusinessInput" type="text" placeholder="Creator / online income priority"></label>
+                <label class="v13-checkline"><input id="big3PersonalDone" type="checkbox"><input id="big3PersonalInput" type="text" placeholder="Personal discipline priority"></label>
+              </div>
+              <p id="big3Status" class="msg"></p>
+            </section>
+
+            <section class="card" id="focusSprintCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-hourglass-half"></i> Focus Sprint</h3><span id="focusTodayTotal" class="chip-btn">0 min today</span></div>
+              <div class="v13-grid">
+                <label>Session<select id="focusDurationSelect"><option value="25">25 minutes</option><option value="50">50 minutes</option><option value="90">90 minutes</option></select></label>
+                <label>Working on<input id="focusTaskInput" type="text" placeholder="Exact task for this session"></label>
+              </div>
+              <div id="focusTimerDisplay" class="v13-timer">25:00</div>
+              <div class="v13-row">
+                <button id="startFocusBtn" class="btn primary v13-grow" type="button"><i class="fa-solid fa-play"></i> Start</button>
+                <button id="pauseFocusBtn" class="chip-btn" type="button"><i class="fa-solid fa-pause"></i> Pause</button>
+                <button id="resetFocusBtn" class="chip-btn" type="button"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+              <p id="focusTimerStatus" class="msg"></p>
+            </section>
+
+            <section class="card" id="quickCaptureCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-inbox"></i> Quick Capture Inbox</h3><span id="quickCaptureCount" class="chip-btn">0</span></div>
+              <form id="quickCaptureForm" class="mini-form">
+                <select id="quickCaptureType" aria-label="Capture type"><option>Task</option><option>Video Idea</option><option>University</option><option>Income Idea</option><option>Research</option><option>Note</option></select>
+                <input id="quickCaptureText" type="text" placeholder="Capture it now; organize it later" required>
+                <button type="submit"><i class="fa-solid fa-plus"></i></button>
+              </form>
+              <div id="quickCaptureList" class="list"></div>
+            </section>
             <div class="section-title"><h3>Quick Habits</h3><button id="downloadTodayBtn" class="chip-btn" type="button"><i class="fa-solid fa-download"></i> Today</button></div>
             <div id="quickHabitPills" class="pill-wrap"></div>
             <div class="section-title"><h3>Top Activities</h3><button class="chip-btn nav-go" data-go="agendaScreen" type="button">See all</button></div>
@@ -52,22 +109,192 @@
 
         <section id="agendaScreen" class="view">
           <header class="app-head grad-agenda"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Daily plan</span><h2>Agenda</h2></div><button id="resetTodayBtn" class="icon" type="button"><i class="fa-solid fa-rotate"></i></button></div><h1>Plan hour by hour.</h1><p>Every timed activity can remind you before and when it starts.</p></header>
-          <div class="content"><section class="card float-card"><div class="section-title tight"><h3 id="monthLabel">This Month</h3><span class="chip-btn">Calendar</span></div><div id="miniCalendar" class="calendar"></div></section><section class="notice"><i class="fa-solid fa-bell"></i><div><b>Smart reminder</b><span id="reminderPreview">Next activity will appear here.</span></div></section><div class="section-title"><h3>Activities</h3><div class="actions"><button id="generateAgendaBtn" class="chip-btn" type="button">Default</button><button id="openTaskModalBtn" class="chip-btn" type="button"><i class="fa-solid fa-plus"></i> Add</button></div></div><label class="select-card">Day Type<select id="dayType"><option value="class">University / Class Day</option><option value="free">No Class / Deep Work Day</option><option value="custom">Custom Day</option></select></label><div id="agendaTaskList" class="list"></div></div>
+          <div class="content"><section class="card float-card"><div class="section-title tight"><h3 id="monthLabel">This Month</h3><span class="chip-btn">Calendar</span></div><div id="miniCalendar" class="calendar"></div></section>
+            <!-- V13 flexible agenda workspace: additive and independent from the existing default agenda. -->
+            <section class="card" id="flexibleAgendaCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-calendar-plus"></i> Unique-Day Agenda</h3><button id="newCustomAgendaBtn" class="chip-btn" type="button">New</button></div>
+              <p class="mini">Create a different agenda for any date without changing your normal Class Day or Deep Work Day.</p>
+              <div class="v13-grid">
+                <label>Date<input id="customAgendaDate" type="date"></label>
+                <label>Agenda name<input id="customAgendaName" type="text" placeholder="Example: Exam day, filming day"></label>
+                <label>Day purpose<select id="customAgendaPurpose"><option>University</option><option>Deep Work</option><option>Content Production</option><option>Income Building</option><option>Rest and Recovery</option><option>Mixed Day</option></select></label>
+                <label>Energy plan<select id="customAgendaEnergy"><option>High-energy day</option><option>Normal day</option><option>Low-energy day</option></select></label>
+              </div>
+              <form id="customAgendaTaskForm" class="mini-form">
+                <input id="customAgendaTaskTime" type="time" required>
+                <input id="customAgendaTaskTitle" type="text" placeholder="Activity" required>
+                <select id="customAgendaTaskCategory"><option>Work</option><option>University</option><option>Content</option><option>Income</option><option>Health</option><option>Personal</option></select>
+                <button type="submit"><i class="fa-solid fa-plus"></i></button>
+              </form>
+              <div id="customAgendaDraftList" class="list"></div>
+              <div class="v13-row">
+                <button id="saveCustomAgendaBtn" class="btn wide pink v13-grow" type="button"><i class="fa-solid fa-floppy-disk"></i> Save This Agenda</button>
+                <button id="duplicateCustomAgendaBtn" class="chip-btn" type="button"><i class="fa-solid fa-copy"></i> Duplicate</button>
+              </div>
+              <p id="customAgendaStatus" class="msg"></p>
+            </section>
+
+            <div class="section-title"><h3>Saved Special Agendas</h3><span id="savedAgendaCount" class="chip-btn">0</span></div>
+            <div id="savedCustomAgendaList" class="list"></div>
+
+            <section class="card" id="carryoverCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Unfinished Work Carryover</h3><button id="clearCarryoverBtn" class="chip-btn" type="button">Clear done</button></div>
+              <form id="carryoverForm" class="mini-form"><input id="carryoverText" type="text" placeholder="Task that must not disappear at midnight" required><input id="carryoverDate" type="date" required><button type="submit"><i class="fa-solid fa-plus"></i></button></form>
+              <div id="carryoverList" class="list"></div>
+            </section>
+<section class="notice"><i class="fa-solid fa-bell"></i><div><b>Smart reminder</b><span id="reminderPreview">Next activity will appear here.</span></div></section><div class="section-title"><h3>Activities</h3><div class="actions"><button id="generateAgendaBtn" class="chip-btn" type="button">Default</button><button id="openTaskModalBtn" class="chip-btn" type="button"><i class="fa-solid fa-plus"></i> Add</button></div></div><label class="select-card">Day Type<select id="dayType"><option value="class">University / Class Day</option><option value="free">No Class / Deep Work Day</option><option value="custom">Custom Day</option></select></label><div id="agendaTaskList" class="list"></div></div>
         </section>
 
         <section id="statsScreen" class="view">
           <header class="app-head grad-habits"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Consistency</span><h2>Habits</h2></div><button class="icon bell-dot" type="button"><i class="fa-solid fa-bell"></i></button></div><h1>Small habits. Big future.</h1><p>Track prayer, sport, water, reading, focus and sleep.</p></header>
-          <div class="content"><div class="stats float-card"><section class="stat"><i class="fa-solid fa-fire-flame-curved fire"></i><b id="streakCount">0</b><span>day streak</span></section><section class="stat"><i class="fa-solid fa-brain"></i><b id="focusScore">0%</b><span>focus score</span></section></div><div class="section-title"><h3>Habit Check-off</h3><span class="chip-btn">Today</span></div><div id="habitGrid" class="habit-grid"></div><section class="card bars"><div class="bar-head"><span><i class="fa-solid fa-droplet"></i> Water Intake</span><b id="waterPercent">0%</b></div><div class="bar"><div id="waterBar" class="fill teal" style="--value:0%"></div></div><div class="bar-head"><span><i class="fa-solid fa-chart-line"></i> Focus Score</span><b id="focusPercent2">0%</b></div><div class="bar"><div id="focusBar" class="fill purple" style="--value:0%"></div></div></section><div class="section-title"><h3>Weekly Heatmap</h3><span class="chip-btn">Progress</span></div><div id="heatmap" class="heatmap card"></div></div>
+          <div class="content"><div class="stats float-card"><section class="stat"><i class="fa-solid fa-fire-flame-curved fire"></i><b id="streakCount">0</b><span>day streak</span></section><section class="stat"><i class="fa-solid fa-brain"></i><b id="focusScore">0%</b><span>focus score</span></section></div>
+            <!-- V13 analytics additions. -->
+            <section class="card" id="scoreBreakdownCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-gauge-high"></i> Daily Score Breakdown</h3><span class="chip-btn">Weighted</span></div>
+              <div class="v13-grid three">
+                <div class="v13-metric"><b id="executionMetric">0%</b><span>Execution</span></div>
+                <div class="v13-metric"><b id="creatorMetric">0%</b><span>Creator</span></div>
+                <div class="v13-metric"><b id="studyMetric">0%</b><span>Study</span></div>
+                <div class="v13-metric"><b id="healthMetric">0%</b><span>Health</span></div>
+                <div class="v13-metric"><b id="disciplineMetric">0%</b><span>Discipline</span></div>
+                <div class="v13-metric"><b id="overallMetric">0%</b><span>Overall</span></div>
+              </div>
+            </section>
+
+            <section class="card" id="sleepTrackerCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-moon"></i> Sleep & Energy</h3><button id="saveSleepBtn" class="chip-btn" type="button">Save</button></div>
+              <div class="v13-grid">
+                <label>Bed time<input id="actualBedTime" type="time"></label>
+                <label>Wake time<input id="actualWakeTime" type="time"></label>
+                <label>Sleep quality<select id="sleepQuality"><option value="5">Excellent</option><option value="4">Good</option><option value="3">Normal</option><option value="2">Poor</option><option value="1">Very poor</option></select></label>
+                <label>Morning energy<select id="morningEnergy"><option value="5">Very high</option><option value="4">High</option><option value="3">Normal</option><option value="2">Low</option><option value="1">Very low</option></select></label>
+              </div>
+              <label class="v13-checkline"><input id="latePhoneUse" type="checkbox"> Used phone unnecessarily before sleep</label>
+              <p id="sleepInsight" class="mini">Save several days to discover how sleep affects your focus.</p>
+            </section>
+
+            <section class="card" id="distractionTrackerCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-ban"></i> Distraction Tracker</h3><span id="distractionTimeTotal" class="chip-btn">0 min lost</span></div>
+              <form id="distractionForm" class="settings">
+                <label>Distraction<select id="distractionType"><option>Random scrolling</option><option>Unnecessary chatting</option><option>Watching without purpose</option><option>Phone during deep work</option><option>Sleeping late</option><option>Starting without finishing</option><option>Other</option></select></label>
+                <label>Minutes lost<input id="distractionMinutes" type="number" min="1" value="10" required></label>
+                <label class="full">Trigger<input id="distractionTrigger" type="text" placeholder="What caused it?"></label>
+                <label class="full">Correction<input id="distractionCorrection" type="text" placeholder="What will you do differently next time?"></label>
+                <button class="btn wide purple full" type="submit">Record Distraction</button>
+              </form>
+              <div id="distractionList" class="list"></div>
+            </section>
+<div class="section-title"><h3>Habit Check-off</h3><span class="chip-btn">Today</span></div><div id="habitGrid" class="habit-grid"></div><section class="card bars"><div class="bar-head"><span><i class="fa-solid fa-droplet"></i> Water Intake</span><b id="waterPercent">0%</b></div><div class="bar"><div id="waterBar" class="fill teal" style="--value:0%"></div></div><div class="bar-head"><span><i class="fa-solid fa-chart-line"></i> Focus Score</span><b id="focusPercent2">0%</b></div><div class="bar"><div id="focusBar" class="fill purple" style="--value:0%"></div></div></section><div class="section-title"><h3>Weekly Heatmap</h3><span class="chip-btn">Progress</span></div><div id="heatmap" class="heatmap card"></div></div>
         </section>
 
         <section id="goalsScreen" class="view">
           <header class="app-head grad-goals"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Mission</span><h2>Goals</h2></div><button id="downloadArchiveBtn" class="icon" type="button"><i class="fa-solid fa-download"></i></button></div><h1>Goals become real through routine.</h1><p>3 channels. $100K mission. Daily execution only.</p></header>
-          <div class="content"><section class="notice float-card greenish"><i class="fa-solid fa-bullseye"></i><div><b>$100K Mission</b><span>YouTube discipline plan • 3-year focus</span></div></section><div class="section-title"><h3>3 Channel System</h3><span class="chip-btn">Global</span></div><div id="channelList" class="list"></div><section class="card"><div class="section-title tight"><h3>Today's YouTube Execution</h3><button id="saveCoachBtn" class="chip-btn" type="button">Save</button></div><div id="coachGrid" class="coach-grid"></div><textarea id="videoIdeaInput" placeholder="Tomorrow's video idea / channel focus..."></textarea><p id="channelMotivationBox" class="mini"></p></section><div class="section-title"><h3>Achievements</h3><button id="downloadAllCSVBtn" class="chip-btn" type="button">CSV</button></div><div id="achievementList" class="list"></div></div>
+          <div class="content"><section class="notice float-card greenish"><i class="fa-solid fa-bullseye"></i><div><b>$100K Mission</b><span>YouTube discipline plan • 3-year focus</span></div></section>
+            <!-- V13 mission, education and creator-business additions. -->
+            <section class="card" id="missionProgressCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-sack-dollar"></i> $100K Online Mission</h3><button id="saveMissionBtn" class="chip-btn" type="button">Save</button></div>
+              <div class="v13-grid">
+                <label>Three-year target ($)<input id="missionTargetInput" type="number" min="1" value="100000"></label>
+                <label>Total earned so far ($)<input id="missionEarnedInput" type="number" min="0" step="0.01" value="0"></label>
+                <label>Monthly target ($)<input id="monthlyIncomeTargetInput" type="number" min="0" step="0.01" value="500"></label>
+                <label>Mission deadline<input id="missionDeadlineInput" type="date"></label>
+              </div>
+              <div class="bar"><div id="missionProgressBar" class="fill purple" style="--value:0%"></div></div>
+              <p id="missionProgressText" class="mini">$0 of $100,000 • 0%</p>
+            </section>
+
+            <div class="section-title"><h3>Education & University</h3><span id="universityOpenCount" class="chip-btn">0 open</span></div>
+            <section class="card" id="universityTrackerCard">
+              <form id="universityTaskForm" class="settings">
+                <label>Course<input id="universityCourse" type="text" placeholder="Data Structures" required></label>
+                <label>Type<select id="universityTaskType"><option>Study Topic</option><option>Assignment</option><option>Exam</option><option>Project</option><option>Revision</option></select></label>
+                <label class="full">Task / topic<input id="universityTaskTitle" type="text" placeholder="Linked lists revision" required></label>
+                <label>Deadline<input id="universityDeadline" type="date"></label>
+                <label>Priority<select id="universityPriority"><option>High</option><option>Medium</option><option>Low</option></select></label>
+                <button class="btn wide purple full" type="submit">Add University Item</button>
+              </form>
+              <div id="universityTaskList" class="list"></div>
+            </section>
+
+            <div class="section-title"><h3>Creator & Online Business Pipeline</h3><span id="creatorPipelineCount" class="chip-btn">0 active</span></div>
+            <section class="card" id="creatorPipelineCard">
+              <p class="mini">Track YouTube, TikTok, digital products and other ethical online-income projects in one place.</p>
+              <form id="creatorPipelineForm" class="settings">
+                <label>Platform<select id="creatorPlatform"><option>DiraIQ YouTube</option><option>Second YouTube Channel</option><option>Third YouTube Channel</option><option>TikTok</option><option>Digital Product</option><option>Affiliate Marketing</option><option>Freelance Service</option><option>Website / SaaS</option><option>Other Online Income</option></select></label>
+                <label>Stage<select id="creatorStage"><option>Idea</option><option>Research</option><option>Title / Offer</option><option>Script / Product Build</option><option>Voice-over / Assets</option><option>Editing / Packaging</option><option>SEO / Sales Page</option><option>Scheduled</option><option>Published / Launched</option><option>Analytics Review</option></select></label>
+                <label class="full">Project title<input id="creatorProjectTitle" type="text" placeholder="Video, TikTok series, template, ebook, course or tool" required></label>
+                <label>Deadline<input id="creatorDeadline" type="date"></label>
+                <label>Expected value ($)<input id="creatorExpectedValue" type="number" min="0" step="0.01" value="0"></label>
+                <button class="btn wide pink full" type="submit">Add to Pipeline</button>
+              </form>
+              <div id="creatorPipelineList" class="list"></div>
+            </section>
+
+            <div class="section-title"><h3>Content & Product Idea Vault</h3><span id="ideaVaultCount" class="chip-btn">0 ideas</span></div>
+            <section class="card" id="ideaVaultCard">
+              <form id="ideaVaultForm" class="settings">
+                <label>Destination<select id="ideaDestination"><option>YouTube</option><option>TikTok</option><option>Digital Product</option><option>Affiliate Content</option><option>Website / SaaS</option></select></label>
+                <label>Priority<select id="ideaPriority"><option>High</option><option>Medium</option><option>Low</option></select></label>
+                <label class="full">Title / idea<input id="ideaTitle" type="text" placeholder="What is the idea?" required></label>
+                <label class="full">Hook / promise<input id="ideaHook" type="text" placeholder="Why should a global audience care?"></label>
+                <button class="btn wide purple full" type="submit">Save Idea</button>
+              </form>
+              <div id="ideaVaultList" class="list"></div>
+            </section>
+
+            <div class="section-title"><h3>Income Streams</h3><span id="incomeThisMonth" class="chip-btn">$0 this month</span></div>
+            <section class="card" id="incomeTrackerCard">
+              <div class="notice"><i class="fa-solid fa-lightbulb"></i><div><b>Build multiple focused streams</b><span>YouTube, TikTok traffic, digital products, affiliate offers, services and software — without chasing everything at once.</span></div></div>
+              <form id="incomeEntryForm" class="settings">
+                <label>Source<select id="incomeSource"><option>YouTube Ads</option><option>TikTok</option><option>Digital Product</option><option>Affiliate Commission</option><option>Freelance Service</option><option>Website / SaaS</option><option>Sponsorship</option><option>Other</option></select></label>
+                <label>Type<select id="incomeEntryType"><option value="income">Income</option><option value="expense">Expense</option></select></label>
+                <label>Amount ($)<input id="incomeAmount" type="number" min="0" step="0.01" required></label>
+                <label>Date<input id="incomeDate" type="date" required></label>
+                <label class="full">Note<input id="incomeNote" type="text" placeholder="Video, client, product or tool"></label>
+                <button class="btn wide pink full" type="submit">Save Money Entry</button>
+              </form>
+              <div class="v13-grid three">
+                <div class="v13-metric"><b id="incomeTotalMetric">$0</b><span>Total income</span></div>
+                <div class="v13-metric"><b id="expenseTotalMetric">$0</b><span>Total expenses</span></div>
+                <div class="v13-metric"><b id="netIncomeMetric">$0</b><span>Net income</span></div>
+              </div>
+              <div id="incomeEntryList" class="list"></div>
+            </section>
+
+            <div class="section-title"><h3>Weekly Control Room</h3><span id="currentWeekLabel" class="chip-btn">This week</span></div>
+            <section class="card" id="weeklyReviewCard">
+              <div class="v13-grid">
+                <label>Three outcomes for this week<textarea id="weeklyOutcomes" placeholder="The three results that matter most"></textarea></label>
+                <label>University deadlines<textarea id="weeklyUniversity" placeholder="Assignments, exams and revision"></textarea></label>
+                <label>Publishing targets<textarea id="weeklyPublishing" placeholder="YouTube, TikTok and product targets"></textarea></label>
+                <label>Income-building target<textarea id="weeklyIncomeTarget" placeholder="One measurable income action"></textarea></label>
+                <label>What wasted my time?<textarea id="weeklyWaste" placeholder="Be honest"></textarea></label>
+                <label>What changes next week?<textarea id="weeklyChange" placeholder="One correction with a clear action"></textarea></label>
+              </div>
+              <button id="saveWeeklyReviewBtn" class="btn wide purple" type="button">Save Weekly Plan & Review</button>
+              <p id="weeklyReviewStatus" class="msg"></p>
+            </section>
+<div class="section-title"><h3>3 Channel System</h3><span class="chip-btn">Global</span></div><div id="channelList" class="list"></div><section class="card"><div class="section-title tight"><h3>Today's YouTube Execution</h3><button id="saveCoachBtn" class="chip-btn" type="button">Save</button></div><div id="coachGrid" class="coach-grid"></div><textarea id="videoIdeaInput" placeholder="Tomorrow's video idea / channel focus..."></textarea><p id="channelMotivationBox" class="mini"></p></section><div class="section-title"><h3>Achievements</h3><button id="downloadAllCSVBtn" class="chip-btn" type="button">CSV</button></div><div id="achievementList" class="list"></div></div>
         </section>
 
         <section id="moreScreen" class="view">
           <header class="app-head grad-more"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Tools</span><h2>More</h2></div><button id="logoutBtn" class="icon danger" type="button"><i class="fa-solid fa-right-from-bracket"></i></button></div><h1>AI coach, reminders, settings.</h1><p>Use the tools that keep you disciplined even when motivation is low.</p></header>
-          <div class="content"><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-brain"></i> AI Discipline Coach</h3></div><div class="tool-grid"><button id="aiDailyReviewBtn" class="tool" type="button">Daily Review</button><button id="aiTomorrowPlanBtn" class="tool" type="button">Tomorrow Plan</button><button id="aiChannelCoachBtn" class="tool" type="button">Channel Coach</button><button id="aiWeeklyReviewBtn" class="tool" type="button">Weekly Review</button></div><div id="aiOutputBox" class="ai-output">AI response will appear here.</div></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-bell"></i> Notifications</h3></div><div class="tool-grid one"><button id="installAppBtn" class="tool purple" type="button">Install App</button><button id="enableNotificationsBtn" class="tool" type="button">Enable Browser Notifications</button><button id="enablePushBtn" class="tool" type="button">Enable Push Notifications</button><button id="sendTestLocalBtn" class="tool" type="button">Test Lock-Screen Notification</button></div><p id="notificationStatus" class="msg"></p><p id="pushStatus" class="msg"></p><textarea id="fcmTokenBox" readonly placeholder="FCM token appears here after enabling push."></textarea><button id="copyTokenBtn" class="small-wide" type="button">Copy Token</button></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-clock"></i> Reminder List</h3><button id="addDefaultRemindersBtn" class="chip-btn" type="button">Load</button></div><div id="reminderList" class="list"></div><form id="addReminderForm" class="mini-form"><input id="reminderTimeInput" type="time" required><input id="reminderTextInput" type="text" placeholder="Reminder message" required><button type="submit"><i class="fa-solid fa-plus"></i></button></form></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-gear"></i> Routine Settings</h3></div><form id="settingsForm" class="settings"><label>Wake<input id="wakeTimeInput" type="time"></label><label>Sleep<input id="sleepTimeInput" type="time"></label><label>Sport<input id="sportTimeInput" type="time"></label><label>Class Start<input id="classStartInput" type="time"></label><label>Class End<input id="classEndInput" type="time"></label><label class="full">Money Goal<input id="moneyGoalInput" type="text"></label><button class="btn wide purple full" type="submit">Save Settings</button></form><p id="settingsStatus" class="msg"></p></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-shield-heart"></i> Discipline Rules</h3></div><div id="rulesList" class="list"></div></section></div>
+          <div class="content">
+            <!-- V13 guided AI chat. It advises; the user remains the final decision-maker. -->
+            <section class="card" id="guidedAiChatCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-comments"></i> Guided AI Chat</h3><button id="clearAiChatBtn" class="chip-btn" type="button">Clear</button></div>
+              <div class="notice"><i class="fa-solid fa-compass"></i><div><b>You remain in control</b><span>The coach challenges your plan, shows options and risks, and asks useful questions. It never makes your life decisions for you.</span></div></div>
+              <div id="guidedAiChatHistory" class="v13-scroll" aria-live="polite"></div>
+              <form id="guidedAiChatForm" class="v13-stack">
+                <textarea id="guidedAiChatInput" placeholder="Example: I have class, one DiraIQ video and an exam. Help me choose a realistic agenda without deciding for me." required></textarea>
+                <div class="v13-row">
+                  <select id="guidedAiMode" class="v13-grow"><option value="challenge">Challenge my thinking</option><option value="options">Show me options</option><option value="plan">Help structure my plan</option><option value="money">Online income coach</option><option value="content">YouTube / TikTok / product coach</option><option value="study">University coach</option></select>
+                  <button id="sendGuidedAiBtn" class="btn primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Send</button>
+                </div>
+              </form>
+              <p id="guidedAiStatus" class="msg"></p>
+            </section>
+<section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-brain"></i> AI Discipline Coach</h3></div><div class="tool-grid"><button id="aiDailyReviewBtn" class="tool" type="button">Daily Review</button><button id="aiTomorrowPlanBtn" class="tool" type="button">Tomorrow Plan</button><button id="aiChannelCoachBtn" class="tool" type="button">Channel Coach</button><button id="aiWeeklyReviewBtn" class="tool" type="button">Weekly Review</button></div><div id="aiOutputBox" class="ai-output">AI response will appear here.</div></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-bell"></i> Notifications</h3></div><div class="tool-grid one"><button id="installAppBtn" class="tool purple" type="button">Install App</button><button id="enableNotificationsBtn" class="tool" type="button">Enable Browser Notifications</button><button id="enablePushBtn" class="tool" type="button">Enable Push Notifications</button><button id="sendTestLocalBtn" class="tool" type="button">Test Lock-Screen Notification</button></div><p id="notificationStatus" class="msg"></p><p id="pushStatus" class="msg"></p><textarea id="fcmTokenBox" readonly placeholder="FCM token appears here after enabling push."></textarea><button id="copyTokenBtn" class="small-wide" type="button">Copy Token</button></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-clock"></i> Reminder List</h3><button id="addDefaultRemindersBtn" class="chip-btn" type="button">Load</button></div><div id="reminderList" class="list"></div><form id="addReminderForm" class="mini-form"><input id="reminderTimeInput" type="time" required><input id="reminderTextInput" type="text" placeholder="Reminder message" required><button type="submit"><i class="fa-solid fa-plus"></i></button></form></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-gear"></i> Routine Settings</h3></div><form id="settingsForm" class="settings"><label>Wake<input id="wakeTimeInput" type="time"></label><label>Sleep<input id="sleepTimeInput" type="time"></label><label>Sport<input id="sportTimeInput" type="time"></label><label>Class Start<input id="classStartInput" type="time"></label><label>Class End<input id="classEndInput" type="time"></label><label class="full">Money Goal<input id="moneyGoalInput" type="text"></label><button class="btn wide purple full" type="submit">Save Settings</button></form><p id="settingsStatus" class="msg"></p></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-shield-heart"></i> Discipline Rules</h3></div><div id="rulesList" class="list"></div></section></div>
         </section>
       </div>
       <button id="fabBtn" class="fab" type="button"><i class="fa-solid fa-plus"></i></button>
@@ -80,5 +307,225 @@
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="fcm-config.js"></script>
   <script type="module" src="app.js"></script>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const STORAGE_KEY = 'dailyRoadmapV13Additions';
+    const todayISO = () => new Date().toISOString().slice(0, 10);
+    const money = value => '$' + Number(value || 0).toLocaleString(undefined, {maximumFractionDigits: 2});
+    const byId = id => document.getElementById(id);
+    const safeParse = value => { try { return JSON.parse(value); } catch { return null; } };
+    const state = safeParse(localStorage.getItem(STORAGE_KEY)) || {
+      big3: {}, focusSessions: [], inbox: [], customAgendas: [], carryover: [], sleep: {}, distractions: [],
+      mission: {target: 100000, earned: 0, monthlyTarget: 500, deadline: ''}, university: [],
+      pipeline: [], ideas: [], moneyEntries: [], weekly: {}, aiChat: []
+    };
+
+    const persist = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const escapeHTML = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2));
+    const setStatus = (id, text) => { const el = byId(id); if (el) el.textContent = text; };
+    const removeById = (collection, id) => { const index = collection.findIndex(item => item.id === id); if (index >= 0) collection.splice(index, 1); persist(); };
+    const daysBetween = (a, b) => Math.ceil((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
+
+    function initDates() {
+      ['customAgendaDate','carryoverDate','universityDeadline','creatorDeadline','incomeDate'].forEach(id => {
+        const el = byId(id); if (el && !el.value) el.value = todayISO();
+      });
+      const deadline = byId('missionDeadlineInput');
+      if (deadline && !state.mission.deadline) {
+        const d = new Date(); d.setFullYear(d.getFullYear() + 3); state.mission.deadline = d.toISOString().slice(0, 10); persist();
+      }
+    }
+
+    function initBig3() {
+      const date = todayISO();
+      const saved = state.big3[date] || {study:'', business:'', personal:'', studyDone:false, businessDone:false, personalDone:false};
+      const map = [
+        ['big3StudyInput','study'],['big3BusinessInput','business'],['big3PersonalInput','personal'],
+        ['big3StudyDone','studyDone'],['big3BusinessDone','businessDone'],['big3PersonalDone','personalDone']
+      ];
+      map.forEach(([id,key]) => { const el = byId(id); if (!el) return; if (el.type === 'checkbox') el.checked = !!saved[key]; else el.value = saved[key] || ''; });
+      const save = () => {
+        state.big3[date] = {
+          study: byId('big3StudyInput').value.trim(), business: byId('big3BusinessInput').value.trim(), personal: byId('big3PersonalInput').value.trim(),
+          studyDone: byId('big3StudyDone').checked, businessDone: byId('big3BusinessDone').checked, personalDone: byId('big3PersonalDone').checked
+        };
+        persist(); updateScores();
+        const done = ['studyDone','businessDone','personalDone'].filter(k => state.big3[date][k]).length;
+        setStatus('big3Status', done === 3 ? 'Today Must Win completed.' : `${done}/3 critical outcomes completed.`);
+      };
+      byId('saveBig3Btn')?.addEventListener('click', save);
+      ['big3StudyDone','big3BusinessDone','big3PersonalDone'].forEach(id => byId(id)?.addEventListener('change', save));
+      save();
+    }
+
+    let focusInterval = null;
+    let focusRemaining = 25 * 60;
+    let focusRunning = false;
+    let activeFocusMinutes = 25;
+    function formatTime(seconds) { const m = Math.floor(seconds / 60); const s = seconds % 60; return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+    function updateFocusDisplay() { if (byId('focusTimerDisplay')) byId('focusTimerDisplay').textContent = formatTime(focusRemaining); }
+    function renderFocusTotal() {
+      const total = state.focusSessions.filter(s => s.date === todayISO()).reduce((sum,s) => sum + Number(s.minutes || 0), 0);
+      if (byId('focusTodayTotal')) byId('focusTodayTotal').textContent = `${total} min today`;
+      updateScores();
+    }
+    function initFocusTimer() {
+      const select = byId('focusDurationSelect');
+      select?.addEventListener('change', () => { if (focusRunning) return; activeFocusMinutes = Number(select.value); focusRemaining = activeFocusMinutes * 60; updateFocusDisplay(); });
+      byId('startFocusBtn')?.addEventListener('click', () => {
+        if (focusRunning) return;
+        const task = byId('focusTaskInput').value.trim();
+        if (!task) { setStatus('focusTimerStatus','Write the exact task before starting.'); return; }
+        focusRunning = true; setStatus('focusTimerStatus',`Deep work: ${task}`);
+        focusInterval = setInterval(() => {
+          focusRemaining -= 1; updateFocusDisplay();
+          if (focusRemaining <= 0) {
+            clearInterval(focusInterval); focusRunning = false;
+            state.focusSessions.push({id:uid(), date:todayISO(), minutes:activeFocusMinutes, task, completedAt:new Date().toISOString()});
+            persist(); renderFocusTotal();
+            setStatus('focusTimerStatus',`Completed ${activeFocusMinutes} focused minutes on “${task}”.`);
+            if ('Notification' in window && Notification.permission === 'granted') new Notification('Focus sprint complete', {body: task});
+            focusRemaining = activeFocusMinutes * 60; updateFocusDisplay();
+          }
+        }, 1000);
+      });
+      byId('pauseFocusBtn')?.addEventListener('click', () => { clearInterval(focusInterval); focusRunning = false; setStatus('focusTimerStatus','Session paused. Resume when ready.'); });
+      byId('resetFocusBtn')?.addEventListener('click', () => { clearInterval(focusInterval); focusRunning = false; activeFocusMinutes = Number(select?.value || 25); focusRemaining = activeFocusMinutes * 60; updateFocusDisplay(); setStatus('focusTimerStatus','Session reset.'); });
+      updateFocusDisplay(); renderFocusTotal();
+    }
+
+    function renderInbox() {
+      const list = byId('quickCaptureList'); if (!list) return;
+      byId('quickCaptureCount').textContent = String(state.inbox.length);
+      list.innerHTML = state.inbox.slice().reverse().map(item => `<section class="notice"><i class="fa-solid fa-note-sticky"></i><div class="v13-grow"><b>${escapeHTML(item.type)}</b><span>${escapeHTML(item.text)}</span></div><button class="chip-btn" type="button" data-remove-inbox="${item.id}"><i class="fa-solid fa-xmark"></i></button></section>`).join('') || '<p class="mini">Your capture inbox is empty.</p>';
+      list.querySelectorAll('[data-remove-inbox]').forEach(btn => btn.addEventListener('click', () => { removeById(state.inbox, btn.dataset.removeInbox); renderInbox(); }));
+    }
+    function initInbox() {
+      byId('quickCaptureForm')?.addEventListener('submit', event => {
+        event.preventDefault(); const text = byId('quickCaptureText').value.trim(); if (!text) return;
+        state.inbox.push({id:uid(), type:byId('quickCaptureType').value, text, createdAt:new Date().toISOString()}); persist(); event.target.reset(); renderInbox();
+      }); renderInbox();
+    }
+
+    let agendaDraft = [];
+    function renderAgendaDraft() {
+      const list = byId('customAgendaDraftList'); if (!list) return;
+      list.innerHTML = agendaDraft.sort((a,b) => a.time.localeCompare(b.time)).map(item => `<section class="notice"><i class="fa-solid fa-clock"></i><div class="v13-grow"><b>${escapeHTML(item.time)} • ${escapeHTML(item.title)}</b><span>${escapeHTML(item.category)}</span></div><button class="chip-btn" type="button" data-remove-agenda-draft="${item.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('') || '<p class="mini">Add activities for this special day.</p>';
+      list.querySelectorAll('[data-remove-agenda-draft]').forEach(btn => btn.addEventListener('click', () => { agendaDraft = agendaDraft.filter(i => i.id !== btn.dataset.removeAgendaDraft); renderAgendaDraft(); }));
+    }
+    function loadAgendaToDraft(agenda) {
+      byId('customAgendaDate').value = agenda.date;
+      byId('customAgendaName').value = agenda.name;
+      byId('customAgendaPurpose').value = agenda.purpose;
+      byId('customAgendaEnergy').value = agenda.energy;
+      agendaDraft = agenda.tasks.map(t => ({...t, id:uid()})); renderAgendaDraft();
+      setStatus('customAgendaStatus',`Loaded “${agenda.name}”. Save to update or choose another date to duplicate.`);
+    }
+    function renderCustomAgendas() {
+      const list = byId('savedCustomAgendaList'); if (!list) return;
+      byId('savedAgendaCount').textContent = String(state.customAgendas.length);
+      list.innerHTML = state.customAgendas.slice().sort((a,b) => b.date.localeCompare(a.date)).map(a => `<section class="card"><div class="section-title tight"><h3>${escapeHTML(a.name)}</h3><span class="chip-btn">${escapeHTML(a.date)}</span></div><p class="mini">${escapeHTML(a.purpose)} • ${escapeHTML(a.energy)} • ${a.tasks.length} activities</p><div class="v13-row"><button class="chip-btn" type="button" data-load-agenda="${a.id}">Open</button><button class="chip-btn" type="button" data-agenda-today="${a.id}">Use today</button><button class="chip-btn" type="button" data-remove-agenda="${a.id}"><i class="fa-solid fa-trash"></i></button></div></section>`).join('') || '<p class="mini">No special agendas saved yet.</p>';
+      list.querySelectorAll('[data-load-agenda]').forEach(btn => btn.addEventListener('click', () => { const a=state.customAgendas.find(x=>x.id===btn.dataset.loadAgenda); if(a) loadAgendaToDraft(a); }));
+      list.querySelectorAll('[data-agenda-today]').forEach(btn => btn.addEventListener('click', () => {
+        const a=state.customAgendas.find(x=>x.id===btn.dataset.agendaToday); if(!a)return;
+        const clone={...a,id:uid(),date:todayISO(),name:a.name+' — Today',tasks:a.tasks.map(t=>({...t,id:uid()}))};
+        state.customAgendas = state.customAgendas.filter(x => !(x.date===todayISO() && x.name.endsWith('— Today'))); state.customAgendas.push(clone); persist(); renderCustomAgendas(); setStatus('customAgendaStatus',`“${a.name}” is now saved for today.`);
+      }));
+      list.querySelectorAll('[data-remove-agenda]').forEach(btn => btn.addEventListener('click', () => { removeById(state.customAgendas, btn.dataset.removeAgenda); renderCustomAgendas(); }));
+    }
+    function initCustomAgenda() {
+      byId('customAgendaTaskForm')?.addEventListener('submit', event => {
+        event.preventDefault(); agendaDraft.push({id:uid(), time:byId('customAgendaTaskTime').value, title:byId('customAgendaTaskTitle').value.trim(), category:byId('customAgendaTaskCategory').value}); event.target.reset(); renderAgendaDraft();
+      });
+      byId('saveCustomAgendaBtn')?.addEventListener('click', () => {
+        const date=byId('customAgendaDate').value, name=byId('customAgendaName').value.trim();
+        if(!date || !name || !agendaDraft.length){setStatus('customAgendaStatus','Add a date, agenda name and at least one activity.');return;}
+        const existing=state.customAgendas.find(a=>a.date===date && a.name===name);
+        const record={id:existing?.id||uid(),date,name,purpose:byId('customAgendaPurpose').value,energy:byId('customAgendaEnergy').value,tasks:agendaDraft.map(t=>({...t}))};
+        if(existing) Object.assign(existing,record); else state.customAgendas.push(record);
+        persist(); renderCustomAgendas(); setStatus('customAgendaStatus',`Saved “${name}” for ${date}.`);
+      });
+      byId('newCustomAgendaBtn')?.addEventListener('click', () => { agendaDraft=[]; byId('customAgendaDate').value=todayISO(); byId('customAgendaName').value=''; renderAgendaDraft(); setStatus('customAgendaStatus','New special agenda ready.'); });
+      byId('duplicateCustomAgendaBtn')?.addEventListener('click', () => { byId('customAgendaName').value=(byId('customAgendaName').value||'Agenda')+' Copy'; setStatus('customAgendaStatus','Choose another date, then save the copy.'); });
+      renderAgendaDraft(); renderCustomAgendas();
+    }
+
+    function renderCarryover() {
+      const list=byId('carryoverList'); if(!list)return;
+      list.innerHTML=state.carryover.map(item=>`<section class="notice"><input type="checkbox" data-carry-done="${item.id}" ${item.done?'checked':''}><div class="v13-grow"><b>${escapeHTML(item.text)}</b><span>Move to: ${escapeHTML(item.date)}</span></div><button class="chip-btn" type="button" data-remove-carry="${item.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">No carried-over work.</p>';
+      list.querySelectorAll('[data-carry-done]').forEach(c=>c.addEventListener('change',()=>{const i=state.carryover.find(x=>x.id===c.dataset.carryDone);if(i)i.done=c.checked;persist();updateScores();}));
+      list.querySelectorAll('[data-remove-carry]').forEach(b=>b.addEventListener('click',()=>{removeById(state.carryover,b.dataset.removeCarry);renderCarryover();}));
+    }
+    function initCarryover(){byId('carryoverForm')?.addEventListener('submit',e=>{e.preventDefault();state.carryover.push({id:uid(),text:byId('carryoverText').value.trim(),date:byId('carryoverDate').value,done:false});persist();e.target.reset();byId('carryoverDate').value=todayISO();renderCarryover();});byId('clearCarryoverBtn')?.addEventListener('click',()=>{state.carryover=state.carryover.filter(i=>!i.done);persist();renderCarryover();});renderCarryover();}
+
+    function sleepHours(bed,wake){if(!bed||!wake)return 0;let [bh,bm]=bed.split(':').map(Number),[wh,wm]=wake.split(':').map(Number);let a=bh*60+bm,b=wh*60+wm;if(b<=a)b+=1440;return (b-a)/60;}
+    function renderSleepInsight(){
+      const records=Object.values(state.sleep); const today=state.sleep[todayISO()];
+      if(today){const h=sleepHours(today.bed,today.wake);setStatus('sleepInsight',`${h.toFixed(1)} hours recorded today • quality ${today.quality}/5 • energy ${today.energy}/5.`);}
+      if(records.length>=4){const avg=records.reduce((s,r)=>s+sleepHours(r.bed,r.wake),0)/records.length;setStatus('sleepInsight',`Your recorded average is ${avg.toFixed(1)} hours across ${records.length} days. Compare this with your focus totals before changing your routine.`);}
+    }
+    function initSleep(){const saved=state.sleep[todayISO()]||{};if(byId('actualBedTime'))byId('actualBedTime').value=saved.bed||'';if(byId('actualWakeTime'))byId('actualWakeTime').value=saved.wake||'';if(byId('sleepQuality'))byId('sleepQuality').value=saved.quality||'3';if(byId('morningEnergy'))byId('morningEnergy').value=saved.energy||'3';if(byId('latePhoneUse'))byId('latePhoneUse').checked=!!saved.latePhone;byId('saveSleepBtn')?.addEventListener('click',()=>{state.sleep[todayISO()]={bed:byId('actualBedTime').value,wake:byId('actualWakeTime').value,quality:byId('sleepQuality').value,energy:byId('morningEnergy').value,latePhone:byId('latePhoneUse').checked};persist();renderSleepInsight();updateScores();});renderSleepInsight();}
+
+    function renderDistractions(){const list=byId('distractionList');if(!list)return;const todayItems=state.distractions.filter(i=>i.date===todayISO());const total=todayItems.reduce((s,i)=>s+Number(i.minutes||0),0);byId('distractionTimeTotal').textContent=`${total} min lost`;list.innerHTML=todayItems.slice().reverse().map(i=>`<section class="notice"><i class="fa-solid fa-triangle-exclamation"></i><div class="v13-grow"><b>${escapeHTML(i.type)} • ${i.minutes} min</b><span>${escapeHTML(i.trigger||'No trigger recorded')} → ${escapeHTML(i.correction||'No correction recorded')}</span></div><button class="chip-btn" type="button" data-remove-distraction="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">No distractions recorded today.</p>';list.querySelectorAll('[data-remove-distraction]').forEach(b=>b.addEventListener('click',()=>{removeById(state.distractions,b.dataset.removeDistraction);renderDistractions();updateScores();}));}
+    function initDistractions(){byId('distractionForm')?.addEventListener('submit',e=>{e.preventDefault();state.distractions.push({id:uid(),date:todayISO(),type:byId('distractionType').value,minutes:Number(byId('distractionMinutes').value),trigger:byId('distractionTrigger').value.trim(),correction:byId('distractionCorrection').value.trim()});persist();e.target.reset();byId('distractionMinutes').value=10;renderDistractions();updateScores();});renderDistractions();}
+
+    function renderMission(){const m=state.mission||{};byId('missionTargetInput').value=m.target||100000;byId('missionEarnedInput').value=m.earned||0;byId('monthlyIncomeTargetInput').value=m.monthlyTarget||500;byId('missionDeadlineInput').value=m.deadline||'';const pct=Math.max(0,Math.min(100,(Number(m.earned||0)/Math.max(1,Number(m.target||100000)))*100));byId('missionProgressBar')?.style.setProperty('--value',pct.toFixed(2)+'%');if(byId('missionProgressText')){const days=m.deadline?daysBetween(todayISO(),m.deadline):0;byId('missionProgressText').textContent=`${money(m.earned)} of ${money(m.target)} • ${pct.toFixed(2)}%${days>0?` • ${days} days remaining`:''}`;}}
+    function initMission(){byId('saveMissionBtn')?.addEventListener('click',()=>{state.mission={target:Number(byId('missionTargetInput').value||100000),earned:Number(byId('missionEarnedInput').value||0),monthlyTarget:Number(byId('monthlyIncomeTargetInput').value||0),deadline:byId('missionDeadlineInput').value};persist();renderMission();});renderMission();}
+
+    function renderUniversity(){const list=byId('universityTaskList');if(!list)return;const open=state.university.filter(i=>!i.done).length;byId('universityOpenCount').textContent=`${open} open`;list.innerHTML=state.university.slice().sort((a,b)=>(a.deadline||'9999').localeCompare(b.deadline||'9999')).map(i=>`<section class="notice"><input type="checkbox" data-university-done="${i.id}" ${i.done?'checked':''}><div class="v13-grow"><b>${escapeHTML(i.course)} • ${escapeHTML(i.title)}</b><span>${escapeHTML(i.type)} • ${escapeHTML(i.priority)}${i.deadline?' • '+escapeHTML(i.deadline):''}</span></div><button class="chip-btn" type="button" data-remove-university="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">No university items added.</p>';list.querySelectorAll('[data-university-done]').forEach(c=>c.addEventListener('change',()=>{const i=state.university.find(x=>x.id===c.dataset.universityDone);if(i)i.done=c.checked;persist();renderUniversity();updateScores();}));list.querySelectorAll('[data-remove-university]').forEach(b=>b.addEventListener('click',()=>{removeById(state.university,b.dataset.removeUniversity);renderUniversity();updateScores();}));}
+    function initUniversity(){byId('universityTaskForm')?.addEventListener('submit',e=>{e.preventDefault();state.university.push({id:uid(),course:byId('universityCourse').value.trim(),type:byId('universityTaskType').value,title:byId('universityTaskTitle').value.trim(),deadline:byId('universityDeadline').value,priority:byId('universityPriority').value,done:false});persist();e.target.reset();renderUniversity();updateScores();});renderUniversity();}
+
+    function renderPipeline(){const list=byId('creatorPipelineList');if(!list)return;const active=state.pipeline.filter(i=>i.stage!=='Published / Launched'&&i.stage!=='Analytics Review').length;byId('creatorPipelineCount').textContent=`${active} active`;list.innerHTML=state.pipeline.map(i=>`<section class="card"><div class="section-title tight"><h3>${escapeHTML(i.title)}</h3><span class="chip-btn">${escapeHTML(i.platform)}</span></div><p class="mini">Stage: ${escapeHTML(i.stage)}${i.deadline?' • Deadline: '+escapeHTML(i.deadline):''}${i.value?` • Expected: ${money(i.value)}`:''}</p><div class="v13-row"><select data-pipeline-stage="${i.id}" class="v13-grow">${['Idea','Research','Title / Offer','Script / Product Build','Voice-over / Assets','Editing / Packaging','SEO / Sales Page','Scheduled','Published / Launched','Analytics Review'].map(s=>`<option ${s===i.stage?'selected':''}>${s}</option>`).join('')}</select><button class="chip-btn" type="button" data-remove-pipeline="${i.id}"><i class="fa-solid fa-trash"></i></button></div></section>`).join('')||'<p class="mini">No creator or product projects in the pipeline.</p>';list.querySelectorAll('[data-pipeline-stage]').forEach(s=>s.addEventListener('change',()=>{const i=state.pipeline.find(x=>x.id===s.dataset.pipelineStage);if(i)i.stage=s.value;persist();renderPipeline();updateScores();}));list.querySelectorAll('[data-remove-pipeline]').forEach(b=>b.addEventListener('click',()=>{removeById(state.pipeline,b.dataset.removePipeline);renderPipeline();updateScores();}));}
+    function initPipeline(){byId('creatorPipelineForm')?.addEventListener('submit',e=>{e.preventDefault();state.pipeline.push({id:uid(),platform:byId('creatorPlatform').value,stage:byId('creatorStage').value,title:byId('creatorProjectTitle').value.trim(),deadline:byId('creatorDeadline').value,value:Number(byId('creatorExpectedValue').value||0)});persist();e.target.reset();renderPipeline();updateScores();});renderPipeline();}
+
+    function renderIdeas(){const list=byId('ideaVaultList');if(!list)return;byId('ideaVaultCount').textContent=`${state.ideas.length} ideas`;list.innerHTML=state.ideas.slice().reverse().map(i=>`<section class="notice"><i class="fa-solid fa-lightbulb"></i><div class="v13-grow"><b>${escapeHTML(i.title)}</b><span>${escapeHTML(i.destination)} • ${escapeHTML(i.priority)}${i.hook?' • '+escapeHTML(i.hook):''}</span></div><button class="chip-btn" type="button" data-promote-idea="${i.id}">Pipeline</button><button class="chip-btn" type="button" data-remove-idea="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">Your idea vault is empty.</p>';list.querySelectorAll('[data-promote-idea]').forEach(b=>b.addEventListener('click',()=>{const i=state.ideas.find(x=>x.id===b.dataset.promoteIdea);if(!i)return;state.pipeline.push({id:uid(),platform:i.destination,stage:'Idea',title:i.title,deadline:'',value:0});persist();renderPipeline();setStatus('weeklyReviewStatus',`Moved “${i.title}” into the pipeline.`);}));list.querySelectorAll('[data-remove-idea]').forEach(b=>b.addEventListener('click',()=>{removeById(state.ideas,b.dataset.removeIdea);renderIdeas();}));}
+    function initIdeas(){byId('ideaVaultForm')?.addEventListener('submit',e=>{e.preventDefault();state.ideas.push({id:uid(),destination:byId('ideaDestination').value,priority:byId('ideaPriority').value,title:byId('ideaTitle').value.trim(),hook:byId('ideaHook').value.trim()});persist();e.target.reset();renderIdeas();});renderIdeas();}
+
+    function renderMoney(){const list=byId('incomeEntryList');if(!list)return;const income=state.moneyEntries.filter(i=>i.type==='income').reduce((s,i)=>s+Number(i.amount||0),0);const expense=state.moneyEntries.filter(i=>i.type==='expense').reduce((s,i)=>s+Number(i.amount||0),0);const month=todayISO().slice(0,7);const monthIncome=state.moneyEntries.filter(i=>i.type==='income'&&i.date.startsWith(month)).reduce((s,i)=>s+Number(i.amount||0),0);byId('incomeThisMonth').textContent=`${money(monthIncome)} this month`;byId('incomeTotalMetric').textContent=money(income);byId('expenseTotalMetric').textContent=money(expense);byId('netIncomeMetric').textContent=money(income-expense);list.innerHTML=state.moneyEntries.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(i=>`<section class="notice"><i class="fa-solid ${i.type==='income'?'fa-arrow-trend-up':'fa-arrow-trend-down'}"></i><div class="v13-grow"><b>${i.type==='income'?'+':'-'}${money(i.amount)} • ${escapeHTML(i.source)}</b><span>${escapeHTML(i.date)}${i.note?' • '+escapeHTML(i.note):''}</span></div><button class="chip-btn" type="button" data-remove-money="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">No income or expense entries yet.</p>';list.querySelectorAll('[data-remove-money]').forEach(b=>b.addEventListener('click',()=>{removeById(state.moneyEntries,b.dataset.removeMoney);renderMoney();}));}
+    function initMoney(){byId('incomeEntryForm')?.addEventListener('submit',e=>{e.preventDefault();state.moneyEntries.push({id:uid(),source:byId('incomeSource').value,type:byId('incomeEntryType').value,amount:Number(byId('incomeAmount').value),date:byId('incomeDate').value,note:byId('incomeNote').value.trim()});persist();e.target.reset();byId('incomeDate').value=todayISO();renderMoney();});renderMoney();}
+
+    function getWeekKey(date=new Date()){const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));const week=Math.ceil((((d-yearStart)/86400000)+1)/7);return `${d.getUTCFullYear()}-W${String(week).padStart(2,'0')}`;}
+    function initWeekly(){const key=getWeekKey();byId('currentWeekLabel').textContent=key;const saved=state.weekly[key]||{};[['weeklyOutcomes','outcomes'],['weeklyUniversity','university'],['weeklyPublishing','publishing'],['weeklyIncomeTarget','income'],['weeklyWaste','waste'],['weeklyChange','change']].forEach(([id,k])=>{if(byId(id))byId(id).value=saved[k]||'';});byId('saveWeeklyReviewBtn')?.addEventListener('click',()=>{state.weekly[key]={outcomes:byId('weeklyOutcomes').value,university:byId('weeklyUniversity').value,publishing:byId('weeklyPublishing').value,income:byId('weeklyIncomeTarget').value,waste:byId('weeklyWaste').value,change:byId('weeklyChange').value,savedAt:new Date().toISOString()};persist();setStatus('weeklyReviewStatus',`Saved plan and review for ${key}.`);});}
+
+    function updateScores(){
+      const b=state.big3[todayISO()]||{};const execution=Math.round(([b.studyDone,b.businessDone,b.personalDone].filter(Boolean).length/3)*100)||0;
+      const studyItems=state.university.filter(i=>!i.deadline||i.deadline>=todayISO());const study=studyItems.length?Math.round(studyItems.filter(i=>i.done).length/studyItems.length*100):execution;
+      const creatorItems=state.pipeline;const creator=creatorItems.length?Math.round(creatorItems.filter(i=>['Scheduled','Published / Launched','Analytics Review'].includes(i.stage)).length/creatorItems.length*100):0;
+      const sleep=state.sleep[todayISO()];const health=sleep?Math.round((Number(sleep.quality)+Number(sleep.energy))/10*100):0;
+      const lost=state.distractions.filter(i=>i.date===todayISO()).reduce((s,i)=>s+Number(i.minutes||0),0);const discipline=Math.max(0,100-Math.min(100,lost));
+      const overall=Math.round((execution+study+creator+health+discipline)/5);
+      [['executionMetric',execution],['studyMetric',study],['creatorMetric',creator],['healthMetric',health],['disciplineMetric',discipline],['overallMetric',overall]].forEach(([id,v])=>{if(byId(id))byId(id).textContent=`${v}%`;});
+    }
+
+    function renderChat(){const box=byId('guidedAiChatHistory');if(!box)return;box.innerHTML=state.aiChat.map(m=>`<section class="notice"><i class="fa-solid ${m.role==='user'?'fa-user':'fa-compass'}"></i><div class="v13-grow"><b>${m.role==='user'?'You':'Roadmap Coach'}</b><span class="v13-chat-message">${escapeHTML(m.text)}</span></div></section>`).join('')||'<p class="mini">Ask about today’s agenda, university, YouTube, TikTok, digital products, focus or your $100K mission.</p>';box.scrollTop=box.scrollHeight;}
+    function localCoach(prompt,mode){
+      const openUni=state.university.filter(i=>!i.done).length;const active=state.pipeline.filter(i=>!['Published / Launched','Analytics Review'].includes(i.stage)).length;const lost=state.distractions.filter(i=>i.date===todayISO()).reduce((s,i)=>s+Number(i.minutes||0),0);const focus=state.focusSessions.filter(i=>i.date===todayISO()).reduce((s,i)=>s+Number(i.minutes||0),0);
+      const context=`Current signals: ${openUni} open university items, ${active} active creator/business projects, ${focus} focused minutes today, and ${lost} distraction minutes recorded.`;
+      if(mode==='options') return `${context}\n\nConsider three options:\n1. Protect the most urgent deadline first.\n2. Protect the activity with the highest long-term value.\n3. Use a minimum viable day: one study block, one creator block, and recovery.\n\nWhich trade-off are you personally willing to accept today?`;
+      if(mode==='money') return `${context}\n\nDo not chase every income method at once. Compare each option using: audience access, skill fit, time to first sale, startup cost, repeatability and risk. A practical sequence may be content for attention, one useful digital product for ownership, then affiliate or service income for cash flow.\n\nYour decision question: which single offer can you test with real people this week?`;
+      if(mode==='content') return `${context}\n\nFor YouTube, TikTok or a digital product, clarify: one audience, one painful problem, one promise and one next action. Repurpose one researched idea across platforms instead of creating unrelated content everywhere.\n\nWhat evidence shows this topic matters to your audience?`;
+      if(mode==='study') return `${context}\n\nChoose the nearest academic risk, break it into a 25–50 minute outcome, then test yourself without notes. Keep creator work, but do not let a flexible publishing task destroy a fixed exam deadline.\n\nWhat exact topic can you prove you understand by the end of one session?`;
+      if(mode==='plan') return `${context}\n\nBuild the agenda around fixed commitments first. Then add one Big 3 study outcome, one creator or income outcome, one health outcome, plus buffer time. Keep the plan below your available energy rather than filling every minute.\n\nWhich activities are fixed, and how many realistic free hours remain?`;
+      return `${context}\n\nMy challenge to your thinking:\n• Is this a real priority or only something that feels productive?\n• What happens if you postpone it for seven days?\n• Can it be reduced to a smaller measurable result?\n• What are you choosing not to do so this can succeed?\n\nI can guide the comparison, but the final choice remains yours.`;
+    }
+    async function askCoach(prompt,mode){
+      const endpoint=document.querySelector('meta[name="daily-roadmap-ai-endpoint"]')?.content?.trim();
+      if(!endpoint) return localCoach(prompt,mode);
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:prompt,mode,context:{big3:state.big3[todayISO()]||{},university:state.university,pipeline:state.pipeline,mission:state.mission,weekly:state.weekly[getWeekKey()]||{}}})});
+      if(!response.ok) throw new Error(`AI endpoint returned ${response.status}`);
+      const data=await response.json(); return data.reply||data.message||localCoach(prompt,mode);
+    }
+    function initChat(){renderChat();byId('guidedAiChatForm')?.addEventListener('submit',async e=>{e.preventDefault();const input=byId('guidedAiChatInput'),prompt=input.value.trim(),mode=byId('guidedAiMode').value;if(!prompt)return;state.aiChat.push({id:uid(),role:'user',text:prompt,at:new Date().toISOString()});persist();input.value='';renderChat();setStatus('guidedAiStatus','Coach is reviewing your options…');byId('sendGuidedAiBtn').disabled=true;try{const reply=await askCoach(prompt,mode);state.aiChat.push({id:uid(),role:'assistant',text:reply,at:new Date().toISOString()});persist();renderChat();setStatus('guidedAiStatus','Guidance ready. You make the final decision.');}catch(error){const reply=localCoach(prompt,mode);state.aiChat.push({id:uid(),role:'assistant',text:reply+'\n\nSecure AI endpoint was unavailable, so this response used the built-in reflective coach.',at:new Date().toISOString()});persist();renderChat();setStatus('guidedAiStatus',error.message);}finally{byId('sendGuidedAiBtn').disabled=false;}});byId('clearAiChatBtn')?.addEventListener('click',()=>{state.aiChat=[];persist();renderChat();setStatus('guidedAiStatus','Chat cleared.');});}
+
+    function init() {
+      initDates(); initBig3(); initFocusTimer(); initInbox(); initCustomAgenda(); initCarryover(); initSleep(); initDistractions(); initMission(); initUniversity(); initPipeline(); initIdeas(); initMoney(); initWeekly(); initChat(); updateScores();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  })();
+  </script>
 </body>
 </html>
