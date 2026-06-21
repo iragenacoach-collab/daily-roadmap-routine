@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- V13 ADDITIVE UPGRADE: Keeps the complete V12 UI, colors, navigation and integrations; adds flexible agendas, Big 3, focus, study, creator-business, income tracking and guided AI chat. -->
+  <!-- V14 HOW THIS BEGAN UPGRADE: one-channel creator routine, professional UI motion, daily control room, and focused production workflow. -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#ff6f91" />
-  <title>My Daily Roadmap Routine</title>
+  <meta name="theme-color" content="#7157ff" />
+  <title>How This Began Daily Control Room</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
@@ -38,7 +38,7 @@
 <body>
   <section id="authScreen" class="auth-screen">
     <div class="auth-wrap">
-      <div class="auth-brand"><div class="logo">DR</div><div><h1>Daily Roadmap</h1><p>Private discipline app for routine, channels, AI coaching and reminders.</p></div></div>
+      <div class="auth-brand"><div class="logo">HTB</div><div><h1>Daily Control Room</h1><p>Private routine app for How This Began: research, script, visuals, editing, website beauty, and upload discipline.</p></div></div>
       <div class="auth-card">
         <div class="auth-tabs"><button id="loginTab" class="tab active" type="button">Login</button><button id="signupTab" class="tab" type="button">Create Admin</button></div>
         <form id="authForm" class="stack">
@@ -58,18 +58,42 @@
     <div class="app-frame">
       <div class="scroll-area">
         <section id="homeScreen" class="view active">
-          <header class="app-head grad-home"><div class="head-top"><div class="user"><div class="avatar"><i class="fa-solid fa-sun"></i></div><div><span id="dateText">Today</span><h2 id="welcomeTitle">Welcome</h2></div></div><button class="icon bell-dot" type="button"><i class="fa-solid fa-bell"></i></button></div><h1>Build today with discipline.</h1><p>Your day resets automatically at midnight. Start fresh and execute.</p></header>
+          <header class="app-head grad-home"><div class="head-top"><div class="user"><div class="avatar"><i class="fa-solid fa-circle-question"></i></div><div><span id="dateText">Today</span><h2 id="welcomeTitle">How This Began</h2></div></div><button class="icon bell-dot" type="button"><i class="fa-solid fa-bell"></i></button></div><h1>Create one powerful origin story today.</h1><p>Your day resets at midnight. Protect research, script, visuals, editing, and upload discipline.</p></header>
           <div class="content">
             <section class="card focus-card float-card"><div id="scoreCircle" class="circle" style="--progress:0"><span id="completionScore">0%</span></div><div><h3>Today's execution</h3><p><b id="doneCount">0</b> done • <b id="leftCount">0</b> left</p><small id="nextTaskLine">Next focus: —</small></div></section>
+
+            <section class="card routine-importance-card motion-card" id="routineImportanceNote">
+              <div class="section-title tight"><h3><i class="fa-solid fa-shield-halved"></i> Why This Routine Matters</h3><span class="chip-btn">Control</span></div>
+              <p class="mini">This routine keeps the channel under control. It stops random work, protects your study time, and turns ChatGPT ideas into real YouTube actions: research, hook, script, voice-over, footage, AI images, animation, editing, thumbnail, upload, and analytics.</p>
+              <div class="routine-note-grid">
+                <span><i class="fa-solid fa-check"></i> One channel focus</span>
+                <span><i class="fa-solid fa-check"></i> Daily execution</span>
+                <span><i class="fa-solid fa-check"></i> Better visuals</span>
+                <span><i class="fa-solid fa-check"></i> No confusion</span>
+              </div>
+            </section>
+
+            <section class="card htb-flow-card motion-card" id="howThisBeganFlowCard">
+              <div class="section-title tight"><h3><i class="fa-solid fa-clapperboard"></i> How This Began Daily Flow</h3><span class="chip-btn">5–10 min video</span></div>
+              <div class="production-steps">
+                <div class="production-step"><b>1</b><span>Research</span><small>facts + sources</small></div>
+                <div class="production-step"><b>2</b><span>Hook</span><small>first 15 sec</small></div>
+                <div class="production-step"><b>3</b><span>Script</span><small>simple English</small></div>
+                <div class="production-step"><b>4</b><span>Visuals</span><small>footage + AI images</small></div>
+                <div class="production-step"><b>5</b><span>Edit</span><small>motion + subtitles</small></div>
+                <div class="production-step"><b>6</b><span>Upload</span><small>title + thumbnail</small></div>
+              </div>
+              <p class="mini">Rule: never edit before the title, hook, and outline are clear. Beauty comes from clean visuals, smooth motion, readable text, and consistent colors.</p>
+            </section>
 
             <!-- V13 additive features: Home. Existing V12 blocks remain unchanged. -->
             <section class="card" id="big3Card">
               <div class="section-title tight"><h3><i class="fa-solid fa-crown"></i> Today Must Win — Big 3</h3><button id="saveBig3Btn" class="chip-btn" type="button">Save</button></div>
-              <p class="mini">Choose only three outcomes that make today successful.</p>
+              <p class="mini">Choose only three outcomes that move How This Began forward today.</p>
               <div class="v13-stack">
                 <label class="v13-checkline"><input id="big3StudyDone" type="checkbox"><input id="big3StudyInput" type="text" placeholder="University / learning priority"></label>
-                <label class="v13-checkline"><input id="big3BusinessDone" type="checkbox"><input id="big3BusinessInput" type="text" placeholder="Creator / online income priority"></label>
-                <label class="v13-checkline"><input id="big3PersonalDone" type="checkbox"><input id="big3PersonalInput" type="text" placeholder="Personal discipline priority"></label>
+                <label class="v13-checkline"><input id="big3BusinessDone" type="checkbox"><input id="big3BusinessInput" type="text" placeholder="How This Began video priority"></label>
+                <label class="v13-checkline"><input id="big3PersonalDone" type="checkbox"><input id="big3PersonalInput" type="text" placeholder="Health / discipline priority"></label>
               </div>
               <p id="big3Status" class="msg"></p>
             </section>
@@ -78,7 +102,7 @@
               <div class="section-title tight"><h3><i class="fa-solid fa-hourglass-half"></i> Focus Sprint</h3><span id="focusTodayTotal" class="chip-btn">0 min today</span></div>
               <div class="v13-grid">
                 <label>Session<select id="focusDurationSelect"><option value="25">25 minutes</option><option value="50">50 minutes</option><option value="90">90 minutes</option></select></label>
-                <label>Working on<input id="focusTaskInput" type="text" placeholder="Exact task for this session"></label>
+                <label>Working on<input id="focusTaskInput" type="text" placeholder="Hook, script, footage, AI image, animation, edit, thumbnail, upload"></label>
               </div>
               <div id="focusTimerDisplay" class="v13-timer">25:00</div>
               <div class="v13-row">
@@ -92,7 +116,7 @@
             <section class="card" id="quickCaptureCard">
               <div class="section-title tight"><h3><i class="fa-solid fa-inbox"></i> Quick Capture Inbox</h3><span id="quickCaptureCount" class="chip-btn">0</span></div>
               <form id="quickCaptureForm" class="mini-form">
-                <select id="quickCaptureType" aria-label="Capture type"><option>Task</option><option>Video Idea</option><option>University</option><option>Income Idea</option><option>Research</option><option>Note</option></select>
+                <select id="quickCaptureType" aria-label="Capture type"><option>Task</option><option>How This Began Idea</option><option>Research Source</option><option>Hook</option><option>Visual / Animation</option><option>Website Beauty</option><option>University</option><option>Note</option></select>
                 <input id="quickCaptureText" type="text" placeholder="Capture it now; organize it later" required>
                 <button type="submit"><i class="fa-solid fa-plus"></i></button>
               </form>
@@ -117,13 +141,13 @@
               <div class="v13-grid">
                 <label>Date<input id="customAgendaDate" type="date"></label>
                 <label>Agenda name<input id="customAgendaName" type="text" placeholder="Example: Exam day, filming day"></label>
-                <label>Day purpose<select id="customAgendaPurpose"><option>University</option><option>Deep Work</option><option>Content Production</option><option>Income Building</option><option>Rest and Recovery</option><option>Mixed Day</option></select></label>
+                <label>Day purpose<select id="customAgendaPurpose"><option>How This Began Production</option><option>Research Day</option><option>Script Day</option><option>Editing / Animation Day</option><option>Website Beauty Day</option><option>Upload Day</option><option>University</option><option>Rest and Recovery</option><option>Mixed Day</option></select></label>
                 <label>Energy plan<select id="customAgendaEnergy"><option>High-energy day</option><option>Normal day</option><option>Low-energy day</option></select></label>
               </div>
               <form id="customAgendaTaskForm" class="mini-form">
                 <input id="customAgendaTaskTime" type="time" required>
                 <input id="customAgendaTaskTitle" type="text" placeholder="Activity" required>
-                <select id="customAgendaTaskCategory"><option>Work</option><option>University</option><option>Content</option><option>Income</option><option>Health</option><option>Personal</option></select>
+                <select id="customAgendaTaskCategory"><option>HTB Research</option><option>HTB Script</option><option>HTB Visuals</option><option>HTB Editing</option><option>Website Beauty</option><option>University</option><option>Health</option><option>Personal</option></select>
                 <button type="submit"><i class="fa-solid fa-plus"></i></button>
               </form>
               <div id="customAgendaDraftList" class="list"></div>
@@ -188,11 +212,11 @@
         </section>
 
         <section id="goalsScreen" class="view">
-          <header class="app-head grad-goals"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Mission</span><h2>Goals</h2></div><button id="downloadArchiveBtn" class="icon" type="button"><i class="fa-solid fa-download"></i></button></div><h1>Goals become real through routine.</h1><p>3 channels. $100K mission. Daily execution only.</p></header>
-          <div class="content"><section class="notice float-card greenish"><i class="fa-solid fa-bullseye"></i><div><b>$100K Mission</b><span>YouTube discipline plan • 3-year focus</span></div></section>
+          <header class="app-head grad-goals"><div class="head-top"><button class="icon nav-go" data-go="homeScreen" type="button"><i class="fa-solid fa-chevron-left"></i></button><div class="center"><span>Mission</span><h2>Goals</h2></div><button id="downloadArchiveBtn" class="icon" type="button"><i class="fa-solid fa-download"></i></button></div><h1>One channel. One daily system.</h1><p>How This Began grows through focused research, strong scripts, beautiful visuals, and consistent uploads.</p></header>
+          <div class="content"><section class="notice float-card greenish htb-channel-highlight"><i class="fa-solid fa-circle-question"></i><div><b>How This Began Mission</b><span>One channel focus • faceless documentary videos • 5–10 minutes • global simple English</span></div></section>
             <!-- V13 mission, education and creator-business additions. -->
             <section class="card" id="missionProgressCard">
-              <div class="section-title tight"><h3><i class="fa-solid fa-sack-dollar"></i> $100K Online Mission</h3><button id="saveMissionBtn" class="chip-btn" type="button">Save</button></div>
+              <div class="section-title tight"><h3><i class="fa-solid fa-sack-dollar"></i> YouTube Growth Mission</h3><button id="saveMissionBtn" class="chip-btn" type="button">Save</button></div>
               <div class="v13-grid">
                 <label>Three-year target ($)<input id="missionTargetInput" type="number" min="1" value="100000"></label>
                 <label>Total earned so far ($)<input id="missionEarnedInput" type="number" min="0" step="0.01" value="0"></label>
@@ -216,13 +240,13 @@
               <div id="universityTaskList" class="list"></div>
             </section>
 
-            <div class="section-title"><h3>Creator & Online Business Pipeline</h3><span id="creatorPipelineCount" class="chip-btn">0 active</span></div>
+            <div class="section-title"><h3>How This Began Production Pipeline</h3><span id="creatorPipelineCount" class="chip-btn">0 active</span></div>
             <section class="card" id="creatorPipelineCard">
-              <p class="mini">Track YouTube, TikTok, digital products and other ethical online-income projects in one place.</p>
+              <p class="mini">Track only one channel: How This Began. Move each video from idea to research, script, visuals, editing, upload, and analytics.</p>
               <form id="creatorPipelineForm" class="settings">
-                <label>Platform<select id="creatorPlatform"><option>DiraIQ YouTube</option><option>Second YouTube Channel</option><option>Third YouTube Channel</option><option>TikTok</option><option>Digital Product</option><option>Affiliate Marketing</option><option>Freelance Service</option><option>Website / SaaS</option><option>Other Online Income</option></select></label>
-                <label>Stage<select id="creatorStage"><option>Idea</option><option>Research</option><option>Title / Offer</option><option>Script / Product Build</option><option>Voice-over / Assets</option><option>Editing / Packaging</option><option>SEO / Sales Page</option><option>Scheduled</option><option>Published / Launched</option><option>Analytics Review</option></select></label>
-                <label class="full">Project title<input id="creatorProjectTitle" type="text" placeholder="Video, TikTok series, template, ebook, course or tool" required></label>
+                <label>Platform<select id="creatorPlatform"><option>How This Began YouTube</option></select></label>
+                <label>Stage<select id="creatorStage"><option>Idea</option><option>Research</option><option>Hook / Title</option><option>Outline</option><option>Script</option><option>Voice-over</option><option>Footage / AI Images</option><option>Editing / Animation</option><option>Thumbnail / SEO</option><option>Scheduled</option><option>Published / Launched</option><option>Analytics Review</option></select></label>
+                <label class="full">Project title<input id="creatorProjectTitle" type="text" placeholder="Example: Why Money Was Invented" required></label>
                 <label>Deadline<input id="creatorDeadline" type="date"></label>
                 <label>Expected value ($)<input id="creatorExpectedValue" type="number" min="0" step="0.01" value="0"></label>
                 <button class="btn wide pink full" type="submit">Add to Pipeline</button>
@@ -230,27 +254,27 @@
               <div id="creatorPipelineList" class="list"></div>
             </section>
 
-            <div class="section-title"><h3>Content & Product Idea Vault</h3><span id="ideaVaultCount" class="chip-btn">0 ideas</span></div>
+            <div class="section-title"><h3>How This Began Idea Vault</h3><span id="ideaVaultCount" class="chip-btn">0 ideas</span></div>
             <section class="card" id="ideaVaultCard">
               <form id="ideaVaultForm" class="settings">
-                <label>Destination<select id="ideaDestination"><option>YouTube</option><option>TikTok</option><option>Digital Product</option><option>Affiliate Content</option><option>Website / SaaS</option></select></label>
+                <label>Destination<select id="ideaDestination"><option>Main YouTube Video</option><option>Shorts Cutdown</option><option>Thumbnail Idea</option><option>Website / Brand Beauty</option><option>Research Source</option></select></label>
                 <label>Priority<select id="ideaPriority"><option>High</option><option>Medium</option><option>Low</option></select></label>
-                <label class="full">Title / idea<input id="ideaTitle" type="text" placeholder="What is the idea?" required></label>
-                <label class="full">Hook / promise<input id="ideaHook" type="text" placeholder="Why should a global audience care?"></label>
+                <label class="full">Title / idea<input id="ideaTitle" type="text" placeholder="Origin topic or website improvement" required></label>
+                <label class="full">Hook / promise<input id="ideaHook" type="text" placeholder="Curiosity hook: why should a global audience care?"></label>
                 <button class="btn wide purple full" type="submit">Save Idea</button>
               </form>
               <div id="ideaVaultList" class="list"></div>
             </section>
 
-            <div class="section-title"><h3>Income Streams</h3><span id="incomeThisMonth" class="chip-btn">$0 this month</span></div>
+            <div class="section-title"><h3>How This Began Money Control</h3><span id="incomeThisMonth" class="chip-btn">$0 this month</span></div>
             <section class="card" id="incomeTrackerCard">
-              <div class="notice"><i class="fa-solid fa-lightbulb"></i><div><b>Build multiple focused streams</b><span>YouTube, TikTok traffic, digital products, affiliate offers, services and software — without chasing everything at once.</span></div></div>
+              <div class="notice"><i class="fa-solid fa-lightbulb"></i><div><b>Focus before expansion</b><span>Track revenue and expenses for How This Began only. Do not chase other channels before this system is consistent.</span></div></div>
               <form id="incomeEntryForm" class="settings">
-                <label>Source<select id="incomeSource"><option>YouTube Ads</option><option>TikTok</option><option>Digital Product</option><option>Affiliate Commission</option><option>Freelance Service</option><option>Website / SaaS</option><option>Sponsorship</option><option>Other</option></select></label>
+                <label>Source<select id="incomeSource"><option>How This Began YouTube Ads</option><option>Sponsorship</option><option>Affiliate / Resource Link</option><option>Client Work From Channel</option><option>Website / Brand Asset</option><option>Tool Subscription Expense</option><option>Stock Footage Expense</option><option>Other</option></select></label>
                 <label>Type<select id="incomeEntryType"><option value="income">Income</option><option value="expense">Expense</option></select></label>
                 <label>Amount ($)<input id="incomeAmount" type="number" min="0" step="0.01" required></label>
                 <label>Date<input id="incomeDate" type="date" required></label>
-                <label class="full">Note<input id="incomeNote" type="text" placeholder="Video, client, product or tool"></label>
+                <label class="full">Note<input id="incomeNote" type="text" placeholder="Video, sponsor, tool, footage, or website asset"></label>
                 <button class="btn wide pink full" type="submit">Save Money Entry</button>
               </form>
               <div class="v13-grid three">
@@ -266,15 +290,18 @@
               <div class="v13-grid">
                 <label>Three outcomes for this week<textarea id="weeklyOutcomes" placeholder="The three results that matter most"></textarea></label>
                 <label>University deadlines<textarea id="weeklyUniversity" placeholder="Assignments, exams and revision"></textarea></label>
-                <label>Publishing targets<textarea id="weeklyPublishing" placeholder="YouTube, TikTok and product targets"></textarea></label>
-                <label>Income-building target<textarea id="weeklyIncomeTarget" placeholder="One measurable income action"></textarea></label>
+                <label>Publishing targets<textarea id="weeklyPublishing" placeholder="How This Began video target, thumbnail, website beauty, and analytics review"></textarea></label>
+                <label>Channel growth target<textarea id="weeklyIncomeTarget" placeholder="One measurable action: publish, improve CTR, improve retention, or improve website branding"></textarea></label>
                 <label>What wasted my time?<textarea id="weeklyWaste" placeholder="Be honest"></textarea></label>
                 <label>What changes next week?<textarea id="weeklyChange" placeholder="One correction with a clear action"></textarea></label>
               </div>
               <button id="saveWeeklyReviewBtn" class="btn wide purple" type="button">Save Weekly Plan & Review</button>
               <p id="weeklyReviewStatus" class="msg"></p>
             </section>
-<div class="section-title"><h3>3 Channel System</h3><span class="chip-btn">Global</span></div><div id="channelList" class="list"></div><section class="card"><div class="section-title tight"><h3>Today's YouTube Execution</h3><button id="saveCoachBtn" class="chip-btn" type="button">Save</button></div><div id="coachGrid" class="coach-grid"></div><textarea id="videoIdeaInput" placeholder="Tomorrow's video idea / channel focus..."></textarea><p id="channelMotivationBox" class="mini"></p></section><div class="section-title"><h3>Achievements</h3><button id="downloadAllCSVBtn" class="chip-btn" type="button">CSV</button></div><div id="achievementList" class="list"></div></div>
+<div class="section-title"><h3>How This Began Control Room</h3><span class="chip-btn">One Channel</span></div><div id="channelList" class="list"></div>
+            <section class="card htb-control-card"><div class="section-title tight"><h3>Today's YouTube Execution</h3><button id="saveCoachBtn" class="chip-btn" type="button">Save</button></div><div id="coachGrid" class="coach-grid"></div><textarea id="videoIdeaInput" placeholder="Tomorrow's How This Began video idea, title, hook, or website improvement..."></textarea><p id="channelMotivationBox" class="mini">One channel focus: research deeply, explain simply, edit beautifully, upload consistently.</p></section>
+            <section class="card htb-quality-card"><div class="section-title tight"><h3><i class="fa-solid fa-wand-magic-sparkles"></i> Video Quality Rules</h3><span class="chip-btn">Professional</span></div><div class="quality-list"><span>Strong title before script</span><span>Hook in first 15 seconds</span><span>5–10 minutes only</span><span>Simple English</span><span>Footage + AI images</span><span>Smooth animations</span><span>Clean subtitles</span><span>Analytics review</span></div></section>
+            <div class="section-title"><h3>Achievements</h3><button id="downloadAllCSVBtn" class="chip-btn" type="button">CSV</button></div><div id="achievementList" class="list"></div></div>
         </section>
 
         <section id="moreScreen" class="view">
@@ -286,15 +313,15 @@
               <div class="notice"><i class="fa-solid fa-compass"></i><div><b>You remain in control</b><span>The coach challenges your plan, shows options and risks, and asks useful questions. It never makes your life decisions for you.</span></div></div>
               <div id="guidedAiChatHistory" class="v13-scroll" aria-live="polite"></div>
               <form id="guidedAiChatForm" class="v13-stack">
-                <textarea id="guidedAiChatInput" placeholder="Example: I have class, one DiraIQ video and an exam. Help me choose a realistic agenda without deciding for me." required></textarea>
+                <textarea id="guidedAiChatInput" placeholder="Example: I have class, one How This Began script and editing work. Help me choose a realistic agenda without deciding for me." required></textarea>
                 <div class="v13-row">
-                  <select id="guidedAiMode" class="v13-grow"><option value="challenge">Challenge my thinking</option><option value="options">Show me options</option><option value="plan">Help structure my plan</option><option value="money">Online income coach</option><option value="content">YouTube / TikTok / product coach</option><option value="study">University coach</option></select>
+                  <select id="guidedAiMode" class="v13-grow"><option value="challenge">Challenge my thinking</option><option value="options">Show me options</option><option value="plan">Help structure my plan</option><option value="money">YouTube growth coach</option><option value="content">How This Began video coach</option><option value="study">University coach</option></select>
                   <button id="sendGuidedAiBtn" class="btn primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Send</button>
                 </div>
               </form>
               <p id="guidedAiStatus" class="msg"></p>
             </section>
-<section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-brain"></i> AI Discipline Coach</h3></div><div class="tool-grid"><button id="aiDailyReviewBtn" class="tool" type="button">Daily Review</button><button id="aiTomorrowPlanBtn" class="tool" type="button">Tomorrow Plan</button><button id="aiChannelCoachBtn" class="tool" type="button">Channel Coach</button><button id="aiWeeklyReviewBtn" class="tool" type="button">Weekly Review</button></div><div id="aiOutputBox" class="ai-output">AI response will appear here.</div></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-bell"></i> Notifications</h3></div><div class="tool-grid one"><button id="installAppBtn" class="tool purple" type="button">Install App</button><button id="enableNotificationsBtn" class="tool" type="button">Enable Browser Notifications</button><button id="enablePushBtn" class="tool" type="button">Enable Push Notifications</button><button id="sendTestLocalBtn" class="tool" type="button">Test Lock-Screen Notification</button></div><p id="notificationStatus" class="msg"></p><p id="pushStatus" class="msg"></p><textarea id="fcmTokenBox" readonly placeholder="FCM token appears here after enabling push."></textarea><button id="copyTokenBtn" class="small-wide" type="button">Copy Token</button></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-clock"></i> Reminder List</h3><button id="addDefaultRemindersBtn" class="chip-btn" type="button">Load</button></div><div id="reminderList" class="list"></div><form id="addReminderForm" class="mini-form"><input id="reminderTimeInput" type="time" required><input id="reminderTextInput" type="text" placeholder="Reminder message" required><button type="submit"><i class="fa-solid fa-plus"></i></button></form></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-gear"></i> Routine Settings</h3></div><form id="settingsForm" class="settings"><label>Wake<input id="wakeTimeInput" type="time"></label><label>Sleep<input id="sleepTimeInput" type="time"></label><label>Sport<input id="sportTimeInput" type="time"></label><label>Class Start<input id="classStartInput" type="time"></label><label>Class End<input id="classEndInput" type="time"></label><label class="full">Money Goal<input id="moneyGoalInput" type="text"></label><button class="btn wide purple full" type="submit">Save Settings</button></form><p id="settingsStatus" class="msg"></p></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-shield-heart"></i> Discipline Rules</h3></div><div id="rulesList" class="list"></div></section></div>
+<section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-brain"></i> AI Discipline Coach</h3></div><div class="tool-grid"><button id="aiDailyReviewBtn" class="tool" type="button">Daily Review</button><button id="aiTomorrowPlanBtn" class="tool" type="button">Tomorrow Plan</button><button id="aiChannelCoachBtn" class="tool" type="button">How This Began Coach</button><button id="aiWeeklyReviewBtn" class="tool" type="button">Weekly Review</button></div><div id="aiOutputBox" class="ai-output">AI response will appear here.</div></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-bell"></i> Notifications</h3></div><div class="tool-grid one"><button id="installAppBtn" class="tool purple" type="button">Install App</button><button id="enableNotificationsBtn" class="tool" type="button">Enable Browser Notifications</button><button id="enablePushBtn" class="tool" type="button">Enable Push Notifications</button><button id="sendTestLocalBtn" class="tool" type="button">Test Lock-Screen Notification</button></div><p id="notificationStatus" class="msg"></p><p id="pushStatus" class="msg"></p><textarea id="fcmTokenBox" readonly placeholder="FCM token appears here after enabling push."></textarea><button id="copyTokenBtn" class="small-wide" type="button">Copy Token</button></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-clock"></i> Reminder List</h3><button id="addDefaultRemindersBtn" class="chip-btn" type="button">Load</button></div><div id="reminderList" class="list"></div><form id="addReminderForm" class="mini-form"><input id="reminderTimeInput" type="time" required><input id="reminderTextInput" type="text" placeholder="Reminder message" required><button type="submit"><i class="fa-solid fa-plus"></i></button></form></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-gear"></i> Routine Settings</h3></div><form id="settingsForm" class="settings"><label>Wake<input id="wakeTimeInput" type="time"></label><label>Sleep<input id="sleepTimeInput" type="time"></label><label>Sport<input id="sportTimeInput" type="time"></label><label>Class Start<input id="classStartInput" type="time"></label><label>Class End<input id="classEndInput" type="time"></label><label class="full">How This Began Goal<input id="moneyGoalInput" type="text" placeholder="Example: publish 2 strong videos this week"></label><button class="btn wide purple full" type="submit">Save Settings</button></form><p id="settingsStatus" class="msg"></p></section><section class="card"><div class="section-title tight"><h3><i class="fa-solid fa-shield-heart"></i> Discipline Rules</h3></div><div id="rulesList" class="list"></div></section></div>
         </section>
       </div>
       <button id="fabBtn" class="fab" type="button"><i class="fa-solid fa-plus"></i></button>
@@ -302,7 +329,7 @@
     </div>
   </main>
 
-  <div id="taskModal" class="modal"><form id="taskForm" class="task-modal"><div class="modal-head"><h3 id="taskModalTitle"><i class="fa-solid fa-plus"></i> Add Activity</h3><button id="closeModalBtn" class="close" type="button"><i class="fa-solid fa-xmark"></i></button></div><label>Task name<input id="taskTitleInput" type="text" placeholder="e.g. Research DiraIQ content" required></label><label>Time<input id="taskTimeInput" type="time" required></label><div class="choices" data-choice="category"><button class="choice active" type="button" data-value="Work"><i class="fa-solid fa-briefcase"></i> Work</button><button class="choice" type="button" data-value="Health"><i class="fa-solid fa-heart-pulse"></i> Health</button><button class="choice" type="button" data-value="Personal"><i class="fa-solid fa-utensils"></i> Personal</button><button class="choice" type="button" data-value="Learning"><i class="fa-solid fa-graduation-cap"></i> Learning</button></div><div class="choices" data-choice="priority"><button class="choice active" type="button" data-value="High"><i class="fa-solid fa-star"></i> High</button><button class="choice" type="button" data-value="Med">Med</button><button class="choice" type="button" data-value="Low">Low</button></div><button id="taskSubmitBtn" class="btn wide pink" type="submit">Save Activity</button><button id="cancelEditBtn" class="text-btn hidden" type="button">Cancel edit</button></form></div>
+  <div id="taskModal" class="modal"><form id="taskForm" class="task-modal"><div class="modal-head"><h3 id="taskModalTitle"><i class="fa-solid fa-plus"></i> Add Activity</h3><button id="closeModalBtn" class="close" type="button"><i class="fa-solid fa-xmark"></i></button></div><label>Task name<input id="taskTitleInput" type="text" placeholder="e.g. Research How This Began video" required></label><label>Time<input id="taskTimeInput" type="time" required></label><div class="choices" data-choice="category"><button class="choice active" type="button" data-value="Work"><i class="fa-solid fa-briefcase"></i> Work</button><button class="choice" type="button" data-value="Health"><i class="fa-solid fa-heart-pulse"></i> Health</button><button class="choice" type="button" data-value="Personal"><i class="fa-solid fa-utensils"></i> Personal</button><button class="choice" type="button" data-value="Learning"><i class="fa-solid fa-graduation-cap"></i> Learning</button></div><div class="choices" data-choice="priority"><button class="choice active" type="button" data-value="High"><i class="fa-solid fa-star"></i> High</button><button class="choice" type="button" data-value="Med">Med</button><button class="choice" type="button" data-value="Low">Low</button></div><button id="taskSubmitBtn" class="btn wide pink" type="submit">Save Activity</button><button id="cancelEditBtn" class="text-btn hidden" type="button">Cancel edit</button></form></div>
 
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="fcm-config.js"></script>
@@ -479,10 +506,10 @@
     function renderUniversity(){const list=byId('universityTaskList');if(!list)return;const open=state.university.filter(i=>!i.done).length;byId('universityOpenCount').textContent=`${open} open`;list.innerHTML=state.university.slice().sort((a,b)=>(a.deadline||'9999').localeCompare(b.deadline||'9999')).map(i=>`<section class="notice"><input type="checkbox" data-university-done="${i.id}" ${i.done?'checked':''}><div class="v13-grow"><b>${escapeHTML(i.course)} • ${escapeHTML(i.title)}</b><span>${escapeHTML(i.type)} • ${escapeHTML(i.priority)}${i.deadline?' • '+escapeHTML(i.deadline):''}</span></div><button class="chip-btn" type="button" data-remove-university="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">No university items added.</p>';list.querySelectorAll('[data-university-done]').forEach(c=>c.addEventListener('change',()=>{const i=state.university.find(x=>x.id===c.dataset.universityDone);if(i)i.done=c.checked;persist();renderUniversity();updateScores();}));list.querySelectorAll('[data-remove-university]').forEach(b=>b.addEventListener('click',()=>{removeById(state.university,b.dataset.removeUniversity);renderUniversity();updateScores();}));}
     function initUniversity(){byId('universityTaskForm')?.addEventListener('submit',e=>{e.preventDefault();state.university.push({id:uid(),course:byId('universityCourse').value.trim(),type:byId('universityTaskType').value,title:byId('universityTaskTitle').value.trim(),deadline:byId('universityDeadline').value,priority:byId('universityPriority').value,done:false});persist();e.target.reset();renderUniversity();updateScores();});renderUniversity();}
 
-    function renderPipeline(){const list=byId('creatorPipelineList');if(!list)return;const active=state.pipeline.filter(i=>i.stage!=='Published / Launched'&&i.stage!=='Analytics Review').length;byId('creatorPipelineCount').textContent=`${active} active`;list.innerHTML=state.pipeline.map(i=>`<section class="card"><div class="section-title tight"><h3>${escapeHTML(i.title)}</h3><span class="chip-btn">${escapeHTML(i.platform)}</span></div><p class="mini">Stage: ${escapeHTML(i.stage)}${i.deadline?' • Deadline: '+escapeHTML(i.deadline):''}${i.value?` • Expected: ${money(i.value)}`:''}</p><div class="v13-row"><select data-pipeline-stage="${i.id}" class="v13-grow">${['Idea','Research','Title / Offer','Script / Product Build','Voice-over / Assets','Editing / Packaging','SEO / Sales Page','Scheduled','Published / Launched','Analytics Review'].map(s=>`<option ${s===i.stage?'selected':''}>${s}</option>`).join('')}</select><button class="chip-btn" type="button" data-remove-pipeline="${i.id}"><i class="fa-solid fa-trash"></i></button></div></section>`).join('')||'<p class="mini">No creator or product projects in the pipeline.</p>';list.querySelectorAll('[data-pipeline-stage]').forEach(s=>s.addEventListener('change',()=>{const i=state.pipeline.find(x=>x.id===s.dataset.pipelineStage);if(i)i.stage=s.value;persist();renderPipeline();updateScores();}));list.querySelectorAll('[data-remove-pipeline]').forEach(b=>b.addEventListener('click',()=>{removeById(state.pipeline,b.dataset.removePipeline);renderPipeline();updateScores();}));}
+    function renderPipeline(){const list=byId('creatorPipelineList');if(!list)return;const active=state.pipeline.filter(i=>i.stage!=='Published / Launched'&&i.stage!=='Analytics Review').length;byId('creatorPipelineCount').textContent=`${active} active`;list.innerHTML=state.pipeline.map(i=>`<section class="card"><div class="section-title tight"><h3>${escapeHTML(i.title)}</h3><span class="chip-btn">${escapeHTML(i.platform)}</span></div><p class="mini">Stage: ${escapeHTML(i.stage)}${i.deadline?' • Deadline: '+escapeHTML(i.deadline):''}${i.value?` • Expected: ${money(i.value)}`:''}</p><div class="v13-row"><select data-pipeline-stage="${i.id}" class="v13-grow">${['Idea','Research','Hook / Title','Outline','Script','Voice-over','Footage / AI Images','Editing / Animation','Thumbnail / SEO','Scheduled','Published / Launched','Analytics Review'].map(s=>`<option ${s===i.stage?'selected':''}>${s}</option>`).join('')}</select><button class="chip-btn" type="button" data-remove-pipeline="${i.id}"><i class="fa-solid fa-trash"></i></button></div></section>`).join('')||'<p class="mini">No How This Began projects in the pipeline.</p>';list.querySelectorAll('[data-pipeline-stage]').forEach(s=>s.addEventListener('change',()=>{const i=state.pipeline.find(x=>x.id===s.dataset.pipelineStage);if(i)i.stage=s.value;persist();renderPipeline();updateScores();}));list.querySelectorAll('[data-remove-pipeline]').forEach(b=>b.addEventListener('click',()=>{removeById(state.pipeline,b.dataset.removePipeline);renderPipeline();updateScores();}));}
     function initPipeline(){byId('creatorPipelineForm')?.addEventListener('submit',e=>{e.preventDefault();state.pipeline.push({id:uid(),platform:byId('creatorPlatform').value,stage:byId('creatorStage').value,title:byId('creatorProjectTitle').value.trim(),deadline:byId('creatorDeadline').value,value:Number(byId('creatorExpectedValue').value||0)});persist();e.target.reset();renderPipeline();updateScores();});renderPipeline();}
 
-    function renderIdeas(){const list=byId('ideaVaultList');if(!list)return;byId('ideaVaultCount').textContent=`${state.ideas.length} ideas`;list.innerHTML=state.ideas.slice().reverse().map(i=>`<section class="notice"><i class="fa-solid fa-lightbulb"></i><div class="v13-grow"><b>${escapeHTML(i.title)}</b><span>${escapeHTML(i.destination)} • ${escapeHTML(i.priority)}${i.hook?' • '+escapeHTML(i.hook):''}</span></div><button class="chip-btn" type="button" data-promote-idea="${i.id}">Pipeline</button><button class="chip-btn" type="button" data-remove-idea="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">Your idea vault is empty.</p>';list.querySelectorAll('[data-promote-idea]').forEach(b=>b.addEventListener('click',()=>{const i=state.ideas.find(x=>x.id===b.dataset.promoteIdea);if(!i)return;state.pipeline.push({id:uid(),platform:i.destination,stage:'Idea',title:i.title,deadline:'',value:0});persist();renderPipeline();setStatus('weeklyReviewStatus',`Moved “${i.title}” into the pipeline.`);}));list.querySelectorAll('[data-remove-idea]').forEach(b=>b.addEventListener('click',()=>{removeById(state.ideas,b.dataset.removeIdea);renderIdeas();}));}
+    function renderIdeas(){const list=byId('ideaVaultList');if(!list)return;byId('ideaVaultCount').textContent=`${state.ideas.length} ideas`;list.innerHTML=state.ideas.slice().reverse().map(i=>`<section class="notice"><i class="fa-solid fa-lightbulb"></i><div class="v13-grow"><b>${escapeHTML(i.title)}</b><span>${escapeHTML(i.destination)} • ${escapeHTML(i.priority)}${i.hook?' • '+escapeHTML(i.hook):''}</span></div><button class="chip-btn" type="button" data-promote-idea="${i.id}">Pipeline</button><button class="chip-btn" type="button" data-remove-idea="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">Your idea vault is empty.</p>';list.querySelectorAll('[data-promote-idea]').forEach(b=>b.addEventListener('click',()=>{const i=state.ideas.find(x=>x.id===b.dataset.promoteIdea);if(!i)return;state.pipeline.push({id:uid(),platform:'How This Began YouTube',stage:'Idea',title:i.title,deadline:'',value:0});persist();renderPipeline();setStatus('weeklyReviewStatus',`Moved “${i.title}” into the pipeline.`);}));list.querySelectorAll('[data-remove-idea]').forEach(b=>b.addEventListener('click',()=>{removeById(state.ideas,b.dataset.removeIdea);renderIdeas();}));}
     function initIdeas(){byId('ideaVaultForm')?.addEventListener('submit',e=>{e.preventDefault();state.ideas.push({id:uid(),destination:byId('ideaDestination').value,priority:byId('ideaPriority').value,title:byId('ideaTitle').value.trim(),hook:byId('ideaHook').value.trim()});persist();e.target.reset();renderIdeas();});renderIdeas();}
 
     function renderMoney(){const list=byId('incomeEntryList');if(!list)return;const income=state.moneyEntries.filter(i=>i.type==='income').reduce((s,i)=>s+Number(i.amount||0),0);const expense=state.moneyEntries.filter(i=>i.type==='expense').reduce((s,i)=>s+Number(i.amount||0),0);const month=todayISO().slice(0,7);const monthIncome=state.moneyEntries.filter(i=>i.type==='income'&&i.date.startsWith(month)).reduce((s,i)=>s+Number(i.amount||0),0);byId('incomeThisMonth').textContent=`${money(monthIncome)} this month`;byId('incomeTotalMetric').textContent=money(income);byId('expenseTotalMetric').textContent=money(expense);byId('netIncomeMetric').textContent=money(income-expense);list.innerHTML=state.moneyEntries.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(i=>`<section class="notice"><i class="fa-solid ${i.type==='income'?'fa-arrow-trend-up':'fa-arrow-trend-down'}"></i><div class="v13-grow"><b>${i.type==='income'?'+':'-'}${money(i.amount)} • ${escapeHTML(i.source)}</b><span>${escapeHTML(i.date)}${i.note?' • '+escapeHTML(i.note):''}</span></div><button class="chip-btn" type="button" data-remove-money="${i.id}"><i class="fa-solid fa-trash"></i></button></section>`).join('')||'<p class="mini">No income or expense entries yet.</p>';list.querySelectorAll('[data-remove-money]').forEach(b=>b.addEventListener('click',()=>{removeById(state.moneyEntries,b.dataset.removeMoney);renderMoney();}));}
@@ -501,13 +528,13 @@
       [['executionMetric',execution],['studyMetric',study],['creatorMetric',creator],['healthMetric',health],['disciplineMetric',discipline],['overallMetric',overall]].forEach(([id,v])=>{if(byId(id))byId(id).textContent=`${v}%`;});
     }
 
-    function renderChat(){const box=byId('guidedAiChatHistory');if(!box)return;box.innerHTML=state.aiChat.map(m=>`<section class="notice"><i class="fa-solid ${m.role==='user'?'fa-user':'fa-compass'}"></i><div class="v13-grow"><b>${m.role==='user'?'You':'Roadmap Coach'}</b><span class="v13-chat-message">${escapeHTML(m.text)}</span></div></section>`).join('')||'<p class="mini">Ask about today’s agenda, university, YouTube, TikTok, digital products, focus or your $100K mission.</p>';box.scrollTop=box.scrollHeight;}
+    function renderChat(){const box=byId('guidedAiChatHistory');if(!box)return;box.innerHTML=state.aiChat.map(m=>`<section class="notice"><i class="fa-solid ${m.role==='user'?'fa-user':'fa-compass'}"></i><div class="v13-grow"><b>${m.role==='user'?'You':'Roadmap Coach'}</b><span class="v13-chat-message">${escapeHTML(m.text)}</span></div></section>`).join('')||'<p class="mini">Ask about today’s agenda, university, How This Began research, script, visuals, animations, editing, website beauty, upload, analytics or your YouTube mission.</p>';box.scrollTop=box.scrollHeight;}
     function localCoach(prompt,mode){
       const openUni=state.university.filter(i=>!i.done).length;const active=state.pipeline.filter(i=>!['Published / Launched','Analytics Review'].includes(i.stage)).length;const lost=state.distractions.filter(i=>i.date===todayISO()).reduce((s,i)=>s+Number(i.minutes||0),0);const focus=state.focusSessions.filter(i=>i.date===todayISO()).reduce((s,i)=>s+Number(i.minutes||0),0);
-      const context=`Current signals: ${openUni} open university items, ${active} active creator/business projects, ${focus} focused minutes today, and ${lost} distraction minutes recorded.`;
+      const context=`Current signals: ${openUni} open university items, ${active} active How This Began projects, ${focus} focused minutes today, and ${lost} distraction minutes recorded.`;
       if(mode==='options') return `${context}\n\nConsider three options:\n1. Protect the most urgent deadline first.\n2. Protect the activity with the highest long-term value.\n3. Use a minimum viable day: one study block, one creator block, and recovery.\n\nWhich trade-off are you personally willing to accept today?`;
-      if(mode==='money') return `${context}\n\nDo not chase every income method at once. Compare each option using: audience access, skill fit, time to first sale, startup cost, repeatability and risk. A practical sequence may be content for attention, one useful digital product for ownership, then affiliate or service income for cash flow.\n\nYour decision question: which single offer can you test with real people this week?`;
-      if(mode==='content') return `${context}\n\nFor YouTube, TikTok or a digital product, clarify: one audience, one painful problem, one promise and one next action. Repurpose one researched idea across platforms instead of creating unrelated content everywhere.\n\nWhat evidence shows this topic matters to your audience?`;
+      if(mode==='money') return `${context}\n\nDo not chase every income method at once. Focus on building How This Began first: searchable topics, strong retention, beautiful editing, consistent uploads, and analytics review.\n\nYour decision question: which one video or website improvement can move the channel forward this week?`;
+      if(mode==='content') return `${context}\n\nFor How This Began, clarify: one origin question, one global viewer curiosity, one simple promise, one hook, and one next editing action. Do not create unrelated content. Make the title, thumbnail, and first 15 seconds match.\n\nWhat evidence shows this topic matters to a global audience?`;
       if(mode==='study') return `${context}\n\nChoose the nearest academic risk, break it into a 25–50 minute outcome, then test yourself without notes. Keep creator work, but do not let a flexible publishing task destroy a fixed exam deadline.\n\nWhat exact topic can you prove you understand by the end of one session?`;
       if(mode==='plan') return `${context}\n\nBuild the agenda around fixed commitments first. Then add one Big 3 study outcome, one creator or income outcome, one health outcome, plus buffer time. Keep the plan below your available energy rather than filling every minute.\n\nWhich activities are fixed, and how many realistic free hours remain?`;
       return `${context}\n\nMy challenge to your thinking:\n• Is this a real priority or only something that feels productive?\n• What happens if you postpone it for seven days?\n• Can it be reduced to a smaller measurable result?\n• What are you choosing not to do so this can succeed?\n\nI can guide the comparison, but the final choice remains yours.`;
@@ -527,5 +554,68 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   })();
   </script>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const htbStages = ['Idea','Research','Hook / Title','Outline','Script','Voice-over','Footage / AI Images','Editing / Animation','Thumbnail / SEO','Scheduled','Published / Launched','Analytics Review'];
+    const byId = id => document.getElementById(id);
+
+    function setOptions(select, options) {
+      if (!select) return;
+      const current = select.value;
+      select.innerHTML = options.map(option => `<option>${option}</option>`).join('');
+      if (options.includes(current)) select.value = current;
+    }
+
+    function renderSingleChannelCard() {
+      const channelList = byId('channelList');
+      if (channelList && !channelList.dataset.htbLocked) {
+        channelList.innerHTML = `
+          <section class="channel-card htb-channel-card">
+            <div class="section-title tight"><h3>How This Began</h3><span class="chip-btn">Main Channel</span></div>
+            <p>Faceless origin documentaries explaining how everyday things, human systems, habits, and inventions began.</p>
+            <p><b>Daily focus:</b> research one strong topic, write a simple script, collect footage/AI images, add smooth animations, improve website/brand beauty, and review analytics.</p>
+          </section>`;
+        channelList.dataset.htbLocked = 'true';
+      }
+    }
+
+    function renderCoachChecklist() {
+      const coachGrid = byId('coachGrid');
+      if (!coachGrid || coachGrid.dataset.htbLocked) return;
+      const items = ['Topic chosen','Sources checked','Hook written','Outline ready','Script under 10 min','Voice-over planned','Footage/AI images planned','Animations/subtitles planned'];
+      coachGrid.innerHTML = items.map(item => `<label class="coach-item"><input type="checkbox" data-htb-check="${item}"><span>${item}</span></label>`).join('');
+      coachGrid.dataset.htbLocked = 'true';
+    }
+
+    function applyHowThisBeganControl() {
+      setOptions(byId('creatorPlatform'), ['How This Began YouTube']);
+      setOptions(byId('creatorStage'), htbStages);
+      setOptions(byId('ideaDestination'), ['Main YouTube Video','Shorts Cutdown','Thumbnail Idea','Website / Brand Beauty','Research Source']);
+      setOptions(byId('incomeSource'), ['How This Began YouTube Ads','Sponsorship','Affiliate / Resource Link','Client Work From Channel','Website / Brand Asset','Tool Subscription Expense','Stock Footage Expense','Other']);
+      renderSingleChannelCard();
+      renderCoachChecklist();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyHowThisBeganControl();
+      setTimeout(applyHowThisBeganControl, 400);
+      setTimeout(applyHowThisBeganControl, 1200);
+      const list = byId('channelList');
+      if (list && 'MutationObserver' in window) {
+        const observer = new MutationObserver(() => {
+          if (!list.dataset.htbLocked || !list.textContent.includes('How This Began')) {
+            list.dataset.htbLocked = '';
+            renderSingleChannelCard();
+          }
+        });
+        observer.observe(list, {childList:true, subtree:true});
+      }
+    });
+  })();
+  </script>
+
 </body>
 </html>
