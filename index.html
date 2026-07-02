@@ -332,6 +332,7 @@
   <div id="taskModal" class="modal"><form id="taskForm" class="task-modal"><div class="modal-head"><h3 id="taskModalTitle"><i class="fa-solid fa-plus"></i> Add Activity</h3><button id="closeModalBtn" class="close" type="button"><i class="fa-solid fa-xmark"></i></button></div><label>Task name<input id="taskTitleInput" type="text" placeholder="e.g. Research How This Began video" required></label><label>Time<input id="taskTimeInput" type="time" required></label><div class="choices" data-choice="category"><button class="choice active" type="button" data-value="Work"><i class="fa-solid fa-briefcase"></i> Work</button><button class="choice" type="button" data-value="Health"><i class="fa-solid fa-heart-pulse"></i> Health</button><button class="choice" type="button" data-value="Personal"><i class="fa-solid fa-utensils"></i> Personal</button><button class="choice" type="button" data-value="Learning"><i class="fa-solid fa-graduation-cap"></i> Learning</button></div><div class="choices" data-choice="priority"><button class="choice active" type="button" data-value="High"><i class="fa-solid fa-star"></i> High</button><button class="choice" type="button" data-value="Med">Med</button><button class="choice" type="button" data-value="Low">Low</button></div><button id="taskSubmitBtn" class="btn wide pink" type="submit">Save Activity</button><button id="cancelEditBtn" class="text-btn hidden" type="button">Cancel edit</button></form></div>
 
   <script type="module" src="firebase-config.js"></script>
+  <script src="firebase-client-config.js"></script>
   <script type="module" src="fcm-config.js"></script>
   <script type="module" src="app.js"></script>
 
@@ -617,5 +618,6 @@
   })();
   </script>
 
+  <script type="module" src="pro-discipline.js"></script>
 </body>
 </html>
