@@ -1,15 +1,42 @@
 {
-  "name": "My Daily Roadmap Routine",
-  "short_name": "Roadmap",
-  "description": "Private daily discipline, routine, achievement, AI coach and reminder app.",
-  "start_url": "./?source=pwa",
+  "name": "How This Began Daily Control Room",
+  "short_name": "HTB Control",
+  "description": "Personal Pro PWA routine app for university, How This Began production, coding, sport, and discipline.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f6f8ff",
-  "theme_color": "#ff6f91",
-  "orientation": "portrait-primary",
+  "theme_color": "#7157ff",
+  "categories": ["productivity", "education", "lifestyle"],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Agenda",
+      "short_name": "Agenda",
+      "description": "Open today agenda and reminders.",
+      "url": "./index.html#agendaScreen",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mission Tracker",
+      "short_name": "Mission",
+      "description": "Open discipline and How This Began tracker.",
+      "url": "./index.html#statsScreen",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
   ]
 }
